@@ -1,0 +1,6 @@
+spring:
+  data:
+    cassandra:
+      keyspace-name: trust_main
+      port: 9142
+      contact-points: localhost

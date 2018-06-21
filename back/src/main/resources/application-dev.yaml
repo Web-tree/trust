@@ -1,0 +1,3 @@
+spring:
+ profiles: dev
+   include: cassandra-active

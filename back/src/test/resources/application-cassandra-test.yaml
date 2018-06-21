@@ -1,0 +1,7 @@
+logging:
+ level:
+    com.datastax.driver.core.QueryLogger.NORMAL: DEBUG
+    com.datastax.driver.core.QueryLogger.SLOW: TRACE
+spring:
+  profiles:
+    include: cassandra-active

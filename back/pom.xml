@@ -19,8 +19,9 @@
         <java.version>1.8</java.version>
         <guava.version>25.0-jre</guava.version>
         <jjwt.version>0.7.0</jjwt.version>
-        <lombok.version>1.16.20</lombok.version>
+        <lombok.version>1.18.0</lombok.version>
         <docker.image.prefix>web-tree</docker.image.prefix>
+        <cassandra-unit.version>3.3.0.2</cassandra-unit.version>
     </properties>
 
     <repositories>
@@ -64,12 +65,12 @@
             <artifactId>guava</artifactId>
             <version>${guava.version}</version>
         </dependency>
-        <!-- <dependency>
+         <dependency>
              <groupId>org.projectlombok</groupId>
              <artifactId>lombok</artifactId>
              <version>${lombok.version}</version>
              <scope>provided</scope>
-         </dependency>-->
+         </dependency>
         <!--<dependency>
           <groupId>io.jsonwebtoken</groupId>
           <artifactId>jjwt</artifactId>
@@ -82,7 +83,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.11</version>
+            <version>4.12</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -107,16 +108,10 @@
             <scope>test</scope>
         </dependency>
 
-        <!--  <dependency>
-              <groupId>org.cassandraunit</groupId>
-              <artifactId>cassandra-unit-shaded</artifactId>
-              <version>RELEASE</version>
-              <scope>compile</scope>
-          </dependency>
-          <dependency>
+         <!--  <dependency>
               <groupId>org.cassandraunit</groupId>
               <artifactId>cassandra-unit-spring</artifactId>
-              <version>2.1.9.2</version>
+              <version>${cassandra-unit.version}</version>
               <scope>test</scope>
               <exclusions>
                   <exclusion>
@@ -124,19 +119,14 @@
                       <artifactId>cassandra-unit</artifactId>
                   </exclusion>
               </exclusions>
-          </dependency>
-          <dependency>
-              <groupId>org.cassandraunit</groupId>
-              <artifactId>cassandra-unit-shaded</artifactId>
-              <version>2.1.9.2</version>
-             <scope>test</scope>
           </dependency>-->
-        <dependency>
-            <groupId>org.hectorclient</groupId>
-            <artifactId>hector-core</artifactId>
-            <version>2.0-0</version>
-        </dependency>
 
+        <dependency>
+            <groupId>org.cassandraunit</groupId>
+            <artifactId>cassandra-unit</artifactId>
+            <version>${cassandra-unit.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -149,6 +139,12 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
+
+                <!--<configuration>
+                    <forkMode>once</forkMode>
+                    <workingDirectory>target</workingDirectory>
+                    <argLine>-Djava.library.path=${basedir}/src/main/resources/lib</argLine>
+                </configuration>-->
             </plugin>
             <plugin>
                 <groupId>com.spotify</groupId>

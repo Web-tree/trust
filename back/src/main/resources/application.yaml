@@ -1,8 +1,6 @@
+#Default profile
 server:
   port: 9000
-
 spring:
-  data:
-    cassandra:
-      contact-points: 192.168.99.100
-      port: 32774
+  profiles:
+    active: dev

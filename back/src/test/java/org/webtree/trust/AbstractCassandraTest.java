@@ -5,11 +5,7 @@ import org.cassandraunit.utils.EmbeddedCassandraServerHelper;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.rules.ExternalResource;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.webtree.trust.boot.App;
 import org.webtree.trust.repository.UserRepository;
 
 public abstract class AbstractCassandraTest extends AbstractSpringTest {

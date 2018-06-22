@@ -5,3 +5,6 @@ logging:
 spring:
   profiles:
     include: cassandra-active
+  data:
+    cassandra:
+      port: 9142

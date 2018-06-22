@@ -2,9 +2,11 @@ package org.webtree.trust.controller.alfa;
 
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.webtree.trust.controller.UserController;
 import org.webtree.trust.provider.Provider;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,14 +19,14 @@ public class TrustController {
     }
 
     @GetMapping("/trust")
-    public ResponseEntity<?> getTrust(@RequestParam("provider") Provider provider, @RequestParam("id") String id) {
-        System.out.println(provider + " " + id);
-        return ResponseEntity.ok(0);
-
+    public ResponseEntity<?> getTrust(@RequestParam("provider") Provider provider, @RequestParam("userId") String id) {
+        return ResponseEntity.ok(0.5F);
     }
-     /*temporal handler here*/
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<?> noProviderException(HttpServletRequest request) {
-        return ResponseEntity.badRequest().body("No such provider: " + request.getParameter("provider"));
+    public @ResponseBody String noProviderExistsException(HttpServletRequest request) {
+        String msg = "No such provider: ";
+        return (msg + request.getParameter("provider"));
     }
 }

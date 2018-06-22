@@ -2,10 +2,26 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
 
-    <groupId>trust-api-front</groupId>
-    <artifactId>org.web-tree.trust.front</artifactId>
-    <version>1.0-SNAPSHOT</version>
+  <groupId>org.webtree</groupId>
+  <artifactId>trust-front</artifactId>
+  <version>1.0-SNAPSHOT</version>
 
+  <properties>
+    <docker.image.prefix>webtree</docker.image.prefix>
+  </properties>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>com.spotify</groupId>
+        <artifactId>dockerfile-maven-plugin</artifactId>
+        <version>1.3.6</version>
+        <configuration>
+          <repository>${docker.image.prefix}/${project.artifactId}</repository>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

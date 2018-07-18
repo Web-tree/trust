@@ -2,6 +2,8 @@ logging:
  level:
     com.datastax.driver.core.QueryLogger.NORMAL: DEBUG
     com.datastax.driver.core.QueryLogger.SLOW: TRACE
+    org.springframework.security.authentication.dao: DEBUG
+
 spring:
   profiles:
     include: cassandra-active

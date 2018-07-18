@@ -7,11 +7,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
-import org.webtree.trust.AbstractSpringTest;
-import org.webtree.trust.util.UserHelper;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.webtree.trust.util.ObjectBuilderHelper;
 
 import org.webtree.trust.domain.User;
 import org.webtree.trust.repository.UserRepository;
@@ -29,7 +27,7 @@ public class UserServiceTest {
 
     private UserService userService;
 
-    private UserHelper userHelper = new UserHelper();
+    private ObjectBuilderHelper objectBuilderHelper = new ObjectBuilderHelper();
 
     @Before
     public void setUp() throws Exception {
@@ -38,7 +36,8 @@ public class UserServiceTest {
 
     @Test
     public void shouldCallRepositoryAndReturnSavedUser() {
-        User firstUser = userHelper.buildUser();
+        //TODO Do we need to test encode functionality here ?
+        User firstUser = objectBuilderHelper.buildRandomUser();
         given(mockUserRepository.save(firstUser)).willReturn(firstUser);
         User secondUser = userService.save(firstUser);
         assertThat(firstUser).isEqualTo(secondUser);
@@ -46,24 +45,26 @@ public class UserServiceTest {
 
     @Test
     public void shouldReturnUserByUsername() {
-        User user = userHelper.buildUser();
+        User user = objectBuilderHelper.buildRandomUser();
         given(mockUserRepository.findById(user.getUsername())).willReturn(Optional.of(user));
         User foundUser = userService.findByUsername(user.getUsername());
         assertThat(foundUser).isEqualTo(user);
+        //and here additional test for loadUserByUsername
+        User loadedByUsername = userService.loadUserByUsername(user.getUsername());
+        assertThat(loadedByUsername).isEqualTo(user);
     }
 
     @Test
     public void shouldReturnFalseIfUserExists() {
-        User user = userHelper.buildUser();
+        User user = objectBuilderHelper.buildRandomUser();
         given(mockUserRepository.saveIfNotExists(user)).willReturn(false);
         assertThat(userService.saveIfNotExists(user)).isFalse();
     }
 
     @Test
     public void shouldReturnTrueIfUserDoesntExists() {
-        User user = userHelper.buildUser();
+        User user = objectBuilderHelper.buildRandomUser();
         given(mockUserRepository.saveIfNotExists(user)).willReturn(true);
         assertThat(userService.saveIfNotExists(user)).isTrue();
     }
-
 }

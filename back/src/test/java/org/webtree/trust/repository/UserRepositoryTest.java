@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 import org.webtree.trust.AbstractCassandraTest;
 
-import org.webtree.trust.util.UserHelper;
+import org.webtree.trust.util.ObjectBuilderHelper;
 import org.webtree.trust.domain.User;
 
 import java.util.Optional;
@@ -20,11 +20,11 @@ public class UserRepositoryTest extends AbstractCassandraTest {
     @Autowired
     private UserRepository userRepository;
 
-    private UserHelper userHelperService = new UserHelper();
+    private ObjectBuilderHelper objectBuilderHelperService = new ObjectBuilderHelper();
 
     @Test
     public void shouldSaveAndFetchUser() {
-        User baseUser = userHelperService.buildUser();
+        User baseUser = objectBuilderHelperService.buildRandomUser();
         User savedUser = userRepository.save(baseUser);
         User user = userRepository.findByUsername(baseUser.getUsername());
         assertThat(baseUser).isEqualTo(user);
@@ -32,7 +32,7 @@ public class UserRepositoryTest extends AbstractCassandraTest {
 
     @Test
     public void whenDeleteUserItShouldBeDeleted() {
-        User savedUser = userRepository.save(userHelperService.buildUser());
+        User savedUser = userRepository.save(objectBuilderHelperService.buildRandomUser());
         User user = userRepository.findByUsername(savedUser.getUsername());
         assertThat(savedUser).isEqualTo(user);
         userRepository.delete(savedUser);
@@ -41,14 +41,14 @@ public class UserRepositoryTest extends AbstractCassandraTest {
 
     @Test
     public void shouldFindUserByUserName() {
-        User savedUser = userRepository.save(userHelperService.buildUser());
+        User savedUser = userRepository.save(objectBuilderHelperService.buildRandomUser());
         Optional<User> foundUser = userRepository.findById(savedUser.getUsername());
         assertThat(foundUser).isEqualTo(Optional.of(savedUser));
     }
 
     @Test
     public void shouldReturnTrueIfUserDoesntExist() {
-        User savedUser = userHelperService.buildUser();
+        User savedUser = objectBuilderHelperService.buildRandomUser();
         assertThat(userRepository.existsById(savedUser.getUsername())).isFalse();
         boolean isSaved = userRepository.saveIfNotExists(savedUser);
         assertThat(isSaved).isTrue();
@@ -57,7 +57,7 @@ public class UserRepositoryTest extends AbstractCassandraTest {
 
     @Test
     public void shouldReturnFalseIfUserExists() {
-        User savedUser = userRepository.save(userHelperService.buildUser());
+        User savedUser = userRepository.save(objectBuilderHelperService.buildRandomUser());
         assertThat(userRepository.existsById(savedUser.getUsername())).isTrue();
         boolean isSaved = userRepository.saveIfNotExists(savedUser);
         assertThat(isSaved).isFalse();
@@ -65,7 +65,7 @@ public class UserRepositoryTest extends AbstractCassandraTest {
 
     @Test
     public void shouldNotUpdateWhenInsertUserWithTheSamePrimaryKey() {
-        User savedUser = userRepository.save(userHelperService.buildUser());
+        User savedUser = userRepository.save(objectBuilderHelperService.buildRandomUser());
         assertThat(userRepository.existsById(savedUser.getUsername())).isTrue();
         boolean isSaved = userRepository.saveIfNotExists(savedUser);
         assertThat(isSaved).isFalse();

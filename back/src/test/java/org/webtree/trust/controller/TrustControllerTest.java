@@ -6,11 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.webtree.trust.provider.Provider;
+import org.webtree.trust.security.WithMockCustomUser;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
+@WithMockCustomUser
 public class TrustControllerTest extends AbstractControllerTest {
 
     @Autowired
@@ -18,7 +20,6 @@ public class TrustControllerTest extends AbstractControllerTest {
 
     @Test
     public void shouldReturnExpectedValueOfTrust() throws Exception {
-
         String userId = "someid";
         Float trustValue = 0.5F;
 
@@ -32,7 +33,6 @@ public class TrustControllerTest extends AbstractControllerTest {
 
     @Test
     public void shouldReturn4xxIfIncorrectProviderPasses() throws Exception {
-
         String provider = "someRandomProvider";
         String userId = "someUUID";
         String errorMsg = "No such provider: ";
@@ -47,7 +47,6 @@ public class TrustControllerTest extends AbstractControllerTest {
 
     @Test
     public void shouldReturn4xxIfOneOrTwoParameterIsMissed() throws Exception {
-
         String provider = "someRandomProvider";
         String userId = "someUUID";
 

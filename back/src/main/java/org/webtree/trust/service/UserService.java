@@ -1,13 +1,15 @@
 package org.webtree.trust.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Profile;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.webtree.trust.domain.User;
 import org.webtree.trust.repository.UserRepository;
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
 
     private UserRepository userRepository;
 
@@ -24,11 +26,16 @@ public class UserService {
         return userRepository.findById(username).get();
     }
 
-    public boolean saveIfNotExists(User user){
+    public boolean saveIfNotExists(User user) {
         return userRepository.saveIfNotExists(user);
     }
 
-    /* public boolean isUserExistsByUsername(User user) {
-        return userRepository.findByUsername(user.getUsername()) != null;
-    }*/
+
+    //TODO So, do we now use only below method or findByUsername to , coz they are the same by functionality?
+    @Override
+    public User loadUserByUsername(String username) throws UsernameNotFoundException {
+        return userRepository.findById(username).get();
+    }
+
+
 }

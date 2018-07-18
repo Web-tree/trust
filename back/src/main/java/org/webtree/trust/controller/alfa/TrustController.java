@@ -1,16 +1,14 @@
 package org.webtree.trust.controller.alfa;
 
-import org.springframework.context.annotation.Profile;
-import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-import org.webtree.trust.controller.UserController;
+
 import org.webtree.trust.provider.Provider;
 
 import javax.servlet.http.HttpServletRequest;
-
+@CrossOrigin
 @RestController
 @RequestMapping("/rest/alfa")
 public class TrustController {

@@ -11,10 +11,11 @@ import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
-import org.webtree.trust.domain.AuthDetals;
-import org.webtree.trust.domain.User;
+
+import org.webtree.trust.domain.AuthDetails;
+import org.webtree.trust.domain.TrustUser;
 import org.webtree.trust.security.JwtTokenUtil;
-import org.webtree.trust.service.UserService;
+import org.webtree.trust.service.TrustUserService;
 import org.webtree.trust.util.ObjectBuilderHelper;
 
 import java.util.Locale;
@@ -32,7 +33,7 @@ public class SecurityControllerTest extends AbstractControllerTest {
     private static final String TEST_PASS = "testPass";
 
     @MockBean
-    private UserService userService;
+    private TrustUserService trustUserService;
 
     @Autowired
     private MockMvc mockMvc;
@@ -52,12 +53,12 @@ public class SecurityControllerTest extends AbstractControllerTest {
     @Test
     public void whenLoginWithCorrectUser_shouldReturnValidToken() throws Exception {
         //AuthDetals for request with nonEncoded password
-        AuthDetals authDetals = objectBuilder.buildUserDTO();
+        AuthDetails authDetals = objectBuilder.buildAuthDetails();
 
-        //User that is stored in DB with already encoded password
-        User user = getUserFromUserDTO(authDetals);
+        //TrustUser that is stored in DB with already encoded password
+        TrustUser trustUser = getUserFromUserDTO(authDetals);
 
-        given(userService.loadUserByUsername(authDetals.getUsername())).willReturn(user);
+        given(trustUserService.loadUserByUsername(authDetals.getUsername())).willReturn(trustUser);
         MvcResult mvcResult = mockMvc.perform(
                 post("/rest/token/new")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -67,7 +68,7 @@ public class SecurityControllerTest extends AbstractControllerTest {
                 .andExpect(jsonPath("$.errors").doesNotExist())
                 .andReturn();
         String token = mvcResult.getResponse().getContentAsString();
-        assertThat(tokenUtil.validateToken(token, user)).isTrue();
+        assertThat(tokenUtil.validateToken(token, trustUser)).isTrue();
     }
 
     @Test
@@ -79,8 +80,8 @@ public class SecurityControllerTest extends AbstractControllerTest {
 
     @Test
     public void whenLoginWithIncorrectUsername_shouldReturnErrorMessage() throws Exception {
-        AuthDetals authDetals = objectBuilder.buildUserDTO();
-        given(userService.loadUserByUsername(authDetals.getUsername())).willReturn(null);
+        AuthDetails authDetals = objectBuilder.buildAuthDetails();
+        given(trustUserService.loadUserByUsername(authDetals.getUsername())).willReturn(null);
         ResultActions actions = mockMvc.perform(
                 post("/rest/token/new")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -92,10 +93,10 @@ public class SecurityControllerTest extends AbstractControllerTest {
 
     @Test
     public void whenLoginWithIncorrectPassword_shouldReturnErrorMessage() throws Exception {
-        AuthDetals authDetals = objectBuilder.buildUserDTO();
+        AuthDetails authDetals = objectBuilder.buildAuthDetails();
 
-        given(userService.loadUserByUsername(authDetals.getUsername())).willReturn(getUserFromUserDTO(authDetals));
-        AuthDetals wrongPasswordUser = AuthDetals.builder().username(authDetals.getUsername()).password("123").build();
+        given(trustUserService.loadUserByUsername(authDetals.getUsername())).willReturn(getUserFromUserDTO(authDetals));
+        AuthDetails wrongPasswordUser = AuthDetails.builder().username(authDetals.getUsername()).password("123").build();
 
         ResultActions actions = mockMvc.perform(
                 post("/rest/token/new")
@@ -110,11 +111,11 @@ public class SecurityControllerTest extends AbstractControllerTest {
     @WithAnonymousUser
     @Test
     public void whenDoingRequestsWithValidTokenItShouldWork() throws Exception {
-        AuthDetals authDetals = objectBuilder.buildUserDTO();
+        AuthDetails authDetals = objectBuilder.buildAuthDetails();
 
-        User userWithEncodedPassword = getUserFromUserDTO(authDetals);
+        TrustUser trustUserWithEncodedPassword = getUserFromUserDTO(authDetals);
 
-        given(userService.loadUserByUsername(authDetals.getUsername())).willReturn(userWithEncodedPassword);
+        given(trustUserService.loadUserByUsername(authDetals.getUsername())).willReturn(trustUserWithEncodedPassword);
         MvcResult mvcResult = mockMvc.perform(
                 post("/rest/token/new")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -148,7 +149,7 @@ public class SecurityControllerTest extends AbstractControllerTest {
 
 
 
-    private User getUserFromUserDTO(AuthDetals authDetals) {
-        return modelMapper.map(authDetals, User.class).enable();
+    private TrustUser getUserFromUserDTO(AuthDetails authDetals) {
+        return modelMapper.map(authDetals, TrustUser.class);
     }
 }

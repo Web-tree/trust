@@ -6,16 +6,20 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.rules.ExternalResource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.webtree.trust.repository.UserRepository;
+import org.springframework.data.cassandra.repository.CassandraRepository;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.test.context.ActiveProfiles;
 
+import java.util.Collection;
+
+@ActiveProfiles("cassandra-test")
 public abstract class AbstractCassandraTest extends AbstractSpringTest {
 
     @Autowired
-    protected UserRepository userRepository;
+    private Collection<CassandraRepository> repos;
 
     @Rule
     public ClearDBRule clearDBRule = new ClearDBRule();
-
     @ClassRule
     public static CassandraTestRule cassandraTestRule = new CassandraTestRule();
 
@@ -30,8 +34,8 @@ public abstract class AbstractCassandraTest extends AbstractSpringTest {
 
         @Override
         protected void after() {
-            userRepository.deleteAll();
-        }
+            repos.iterator().forEachRemaining(CrudRepository::deleteAll);
+            }
     }
 
 

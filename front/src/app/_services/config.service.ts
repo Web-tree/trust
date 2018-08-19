@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 
 @Injectable({
   providedIn: 'root'
@@ -11,4 +11,7 @@ export class ConfigService {
     return this.backEndUrl;
   }
 
+  getProviderApp(providerId) {
+
+  }
 }

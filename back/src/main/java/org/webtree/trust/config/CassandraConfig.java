@@ -61,17 +61,6 @@ public class CassandraConfig extends AbstractCassandraConfiguration {
         return keySpace;
     }
 
-
-  /*  protected List<String> getStartupScripts() {
-
-        String script = "CREATE KEYSPACE IF NOT EXISTS "
-                + keySpace
-                + " WITH durable_writes = true "
-                + "AND replication = { 'replication_factor' : 1, 'class' : 'SimpleStrategy' };";
-
-        return Arrays.asList(script);
-    }*/
-
     @Override
     protected List<CreateKeyspaceSpecification> getKeyspaceCreations() {
         CreateKeyspaceSpecification specification = CreateKeyspaceSpecification.createKeyspace(keySpace)
@@ -80,9 +69,4 @@ public class CassandraConfig extends AbstractCassandraConfiguration {
                 .withSimpleReplication(1L);
         return Arrays.asList(specification);
     }
-
-
-  /*  protected List<String> getShutdownScripts() {
-        return Arrays.asList("DROP KEYSPACE my_keyspace;");
-    }*/
 }

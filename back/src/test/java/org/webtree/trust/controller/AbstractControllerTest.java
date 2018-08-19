@@ -7,13 +7,18 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import org.webtree.trust.AbstractSpringTest;
-import org.webtree.trust.repository.UserRepository;
+import org.webtree.trust.repository.TrustUserLockRepository;
+import org.webtree.trust.repository.social.FBUserRepository;
+import org.webtree.trust.repository.TrustUserRepository;
+import org.webtree.trust.repository.social.PrivateFBUserRepository;
 
 @AutoConfigureMockMvc
 public abstract class AbstractControllerTest extends AbstractSpringTest {
 
-    @MockBean
-    private UserRepository userRepository;
+    @MockBean private TrustUserRepository trustUserRepository;
+    @MockBean private FBUserRepository fbUserRepository;
+    @MockBean private PrivateFBUserRepository privateFBUserRepository;
+    @MockBean private TrustUserLockRepository lockRepository;
 
     protected ObjectMapper objectMapper;
 

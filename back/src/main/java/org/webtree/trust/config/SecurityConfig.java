@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 
@@ -19,29 +18,29 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.webtree.trust.security.JwtAuthenticationEntryPoint;
 import org.webtree.trust.security.JwtAuthenticationTokenFilter;
 import org.webtree.trust.security.JwtTokenUtil;
-import org.webtree.trust.service.UserService;
+import org.webtree.trust.service.TrustUserService;
 
 @ComponentScan("org.webtree.trust")
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final UserService userService;
+    private final TrustUserService trustUserService;
     private final JwtTokenUtil tokenUtil;
     private final JwtAuthenticationEntryPoint unauthorizedHandler;
 
     @Autowired
-    public SecurityConfig(UserService userService, JwtTokenUtil tokenUtil, JwtAuthenticationEntryPoint unauthorizedHandler) {
-        this.userService = userService;
+    public SecurityConfig(TrustUserService trustUserService, JwtTokenUtil tokenUtil, JwtAuthenticationEntryPoint unauthorizedHandler) {
+        this.trustUserService = trustUserService;
         this.tokenUtil = tokenUtil;
         this.unauthorizedHandler = unauthorizedHandler;
     }
 
     @Autowired
-    public void configureAuthentication(AuthenticationManagerBuilder authenticationManagerBuilder, UserService userService) throws Exception {
+    public void configureAuthentication(AuthenticationManagerBuilder authenticationManagerBuilder, TrustUserService trustUserService) throws Exception {
 
         authenticationManagerBuilder
-                .userDetailsService(userService)
+                .userDetailsService(trustUserService)
                 .passwordEncoder(passwordEncoder());
 
     }
@@ -59,7 +58,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public JwtAuthenticationTokenFilter authenticationTokenFilterBean() throws Exception {
-        return new JwtAuthenticationTokenFilter(userService, tokenUtil);
+        return new JwtAuthenticationTokenFilter(trustUserService, tokenUtil);
     }
 
     @Override

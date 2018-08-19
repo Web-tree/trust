@@ -11,8 +11,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
-import org.webtree.trust.domain.User;
-import org.webtree.trust.service.UserService;
+import org.webtree.trust.domain.TrustUser;
+import org.webtree.trust.service.TrustUserService;
 
 
 import javax.servlet.FilterChain;
@@ -25,15 +25,15 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
     private static final Log logger = LogFactory.getLog(JwtAuthenticationTokenFilter.class);
 
-    private final UserService userService;
+    private final TrustUserService trustUserService;
     private final JwtTokenUtil jwtTokenUtil;
 
     @Value("${jwt.header}")
     private String tokenHeader;
 
     @Autowired
-    public JwtAuthenticationTokenFilter(UserService userService, JwtTokenUtil jwtTokenUtil) {
-        this.userService = userService;
+    public JwtAuthenticationTokenFilter(TrustUserService trustUserService, JwtTokenUtil jwtTokenUtil) {
+        this.trustUserService = trustUserService;
         this.jwtTokenUtil = jwtTokenUtil;
     }
 
@@ -61,14 +61,14 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
             // It is not compelling necessary to load the use details from the database. You could also store the information
             // in the token and read it from it. It's up to you ;)
-           User user = this.userService.loadUserByUsername(username);
+           TrustUser trustUser = this.trustUserService.loadUserByUsername(username);
 
             // For simple validation it is completely sufficient to just check the token integrity. You don't have to call
             // the database compellingly. Again it's up to you ;)
-            if (user != null && jwtTokenUtil.validateToken(authToken, user)) {
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+            if (trustUser != null && jwtTokenUtil.validateToken(authToken, trustUser)) {
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(trustUser, null, trustUser.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                logger.info("authenticated user " + username + ", setting security context");
+                logger.info("authenticated trustUser " + username + ", setting security context");
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         }

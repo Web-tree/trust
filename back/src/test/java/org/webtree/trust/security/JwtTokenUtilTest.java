@@ -9,7 +9,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.webtree.trust.common.utils.TimeProvider;
-import org.webtree.trust.domain.User;
+import org.webtree.trust.domain.TrustUser;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -26,6 +26,7 @@ import static org.mockito.Mockito.when;
 public class JwtTokenUtilTest {
 
     private static final String TEST_USERNAME = "testUser";
+    private static final String USER_ID ="someUserId";
 
     @Mock
     private TimeProvider timeProviderMock;
@@ -62,6 +63,7 @@ public class JwtTokenUtilTest {
         assertThat(jwtTokenUtil.getUsernameFromToken(token)).isEqualTo(TEST_USERNAME);
     }
 
+
     @Test
     public void getCreatedDateFromToken() throws Exception {
         final Date now = DateUtil.now();
@@ -83,7 +85,7 @@ public class JwtTokenUtilTest {
     }
 
   /*  @Test
-    public void getAudienceFromToken() throws Exception {
+    public void getAudienceFromToken() throws exception {
         when(timeProviderMock.now()).thenReturn(DateUtil.now());
         final String token = createToken();
 
@@ -130,11 +132,11 @@ public class JwtTokenUtilTest {
     public void canValidateToken() throws Exception {
         when(timeProviderMock.now())
             .thenReturn(DateUtil.now());
-        User userDetails = mock(User.class);
-        when(userDetails.getUsername()).thenReturn(TEST_USERNAME);
+        TrustUser trustUserDetails = mock(TrustUser.class);
+        when(trustUserDetails.getUsername()).thenReturn(TEST_USERNAME);
 
         String token = createToken();
-        assertThat(jwtTokenUtil.validateToken(token, userDetails)).isTrue();
+        assertThat(jwtTokenUtil.validateToken(token, trustUserDetails)).isTrue();
     }
 
     private Map<String, Object> createClaims(String creationDate) {
@@ -149,7 +151,7 @@ public class JwtTokenUtilTest {
         final DeviceDummy device = new DeviceDummy();
         device.setNormal(true);
 
-        return jwtTokenUtil.generateToken(User.builder().username(TEST_USERNAME).build()/*, device*/);
+        return jwtTokenUtil.generateToken(TrustUser.builder().username(TEST_USERNAME).id(USER_ID).build()/*, device*/);
     }
 
 }

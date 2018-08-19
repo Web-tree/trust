@@ -1,18 +1,16 @@
 package org.webtree.trust.security;
 
 
-
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.webtree.trust.common.utils.TimeProvider;
 
-import org.webtree.trust.domain.User;
+import org.webtree.trust.domain.TrustUser;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -49,6 +47,7 @@ public class JwtTokenUtil implements Serializable {
         return getClaimFromToken(token, Claims::getSubject);
     }
 
+
     public Date getIssuedAtDateFromToken(String token) {
         return getClaimFromToken(token, Claims::getIssuedAt);
     }
@@ -65,11 +64,12 @@ public class JwtTokenUtil implements Serializable {
         final Claims claims = getAllClaimsFromToken(token);
         return claimsResolver.apply(claims);
     }
+
     private Claims getAllClaimsFromToken(String token) {
         return Jwts.parser()
-            .setSigningKey(secret)
-            .parseClaimsJws(token)
-            .getBody();
+                .setSigningKey(secret)
+                .parseClaimsJws(token)
+                .getBody();
     }
 
     private Boolean isTokenExpired(String token) {
@@ -98,31 +98,31 @@ public class JwtTokenUtil implements Serializable {
         return (AUDIENCE_TABLET.equals(audience) || AUDIENCE_MOBILE.equals(audience));
     }*/
 
-    public String generateToken(UserDetails userDetails/*, Device device*/) {
+    public String generateToken(TrustUser trustUser/*, Device device*/) {
         Map<String, Object> claims = new HashMap<>();
-        return doGenerateToken(claims, userDetails.getUsername()/*, generateAudience(device)*/);
+        return doGenerateToken(claims, trustUser.getUsername(), trustUser.getId()/*, generateAudience(device)*/);
     }
 
-    private String doGenerateToken(Map<String, Object> claims, String subject/*, String audience*/) {
+    private String doGenerateToken(Map<String, Object> claims, String subject, String id/*, String audience*/) {
         final Date createdDate = timeProvider.now();
         final Date expirationDate = calculateExpirationDate(createdDate);
 
         System.out.println("doGenerateToken " + createdDate);
 
         return Jwts.builder()
-            .setClaims(claims)
-            .setSubject(subject)
-            /*.setAudience(audience)*/
-            .setIssuedAt(createdDate)
-            .setExpiration(expirationDate)
-            .signWith(SignatureAlgorithm.HS512, secret)
-            .compact();
+                .setClaims(claims)
+                .setSubject(subject)
+                /*.setAudience(audience)*/
+                .setIssuedAt(createdDate)
+                .setExpiration(expirationDate)
+                .signWith(SignatureAlgorithm.HS512, secret)
+                .compact();
     }
 
     public Boolean canTokenBeRefreshed(String token, Date lastPasswordReset) {
         final Date created = getIssuedAtDateFromToken(token);
         return !isCreatedBeforeLastPasswordReset(created, lastPasswordReset)
-            && (!isTokenExpired(token) /*|| ignoreTokenExpiration(token)*/);
+                && (!isTokenExpired(token) /*|| ignoreTokenExpiration(token)*/);
     }
 
     public String refreshToken(String token) {
@@ -134,19 +134,19 @@ public class JwtTokenUtil implements Serializable {
         claims.setExpiration(expirationDate);
 
         return Jwts.builder()
-            .setClaims(claims)
-            .signWith(SignatureAlgorithm.HS512, secret)
-            .compact();
+                .setClaims(claims)
+                .signWith(SignatureAlgorithm.HS512, secret)
+                .compact();
     }
 
-    public Boolean validateToken(String token, User user) {
+    public Boolean validateToken(String token, TrustUser trustUser) {
         final String username = getUsernameFromToken(token);
         final Date created = getIssuedAtDateFromToken(token);
         //final Date expiration = getExpirationDateFromToken(token);
         return (
-            username.equals(user.getUsername())
-                && !isTokenExpired(token)
-                && !isCreatedBeforeLastPasswordReset(created, user.getLastPasswordResetDate())
+                username.equals(trustUser.getUsername())
+                        && !isTokenExpired(token)
+                        && !isCreatedBeforeLastPasswordReset(created, trustUser.getLastPasswordResetDate())
         );
     }
 

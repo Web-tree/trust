@@ -8,10 +8,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import org.webtree.trust.domain.AuthDetals;
-import org.webtree.trust.domain.User;
+import org.webtree.trust.domain.AuthDetails;
+import org.webtree.trust.domain.TrustUser;
 import org.webtree.trust.security.JwtTokenUtil;
-import org.webtree.trust.service.UserService;
+import org.webtree.trust.service.TrustUserService;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -25,25 +25,25 @@ public class SecurityController extends AbstractController {
     private String tokenHeader;
 
     private JwtTokenUtil jwtTokenUtil;
-    private UserService userService;
+    private TrustUserService trustUserService;
 
     @Autowired
-    public SecurityController(AuthenticationManager authenticationManager, JwtTokenUtil jwtTokenUtil, UserService userService) {
+    public SecurityController(AuthenticationManager authenticationManager, JwtTokenUtil jwtTokenUtil, TrustUserService trustUserService) {
         this.authenticationManager = authenticationManager;
         this.jwtTokenUtil = jwtTokenUtil;
-        this.userService = userService;
+        this.trustUserService = trustUserService;
     }
 
     @PostMapping("${jwt.route.authentication.path}")
-    public ResponseEntity<?> login(@RequestBody AuthDetals authDetals/*, Device device*/) {
+    public ResponseEntity<?> login(@RequestBody AuthDetails authDetails/*, Device device*/) {
         Authentication authentication =
                 authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                        authDetals.getUsername(), authDetals.getPassword()));
+                        authDetails.getUsername(), authDetails.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        User user = userService.loadUserByUsername(authDetals.getUsername());
-        return ResponseEntity.ok(jwtTokenUtil.generateToken(user/*, device)*/));
+        TrustUser trustUser = trustUserService.loadUserByUsername(authDetails.getUsername());
+        return ResponseEntity.ok(jwtTokenUtil.generateToken(trustUser/*, device)*/));
     }
 
     @PostMapping
@@ -51,9 +51,9 @@ public class SecurityController extends AbstractController {
     public ResponseEntity<?> refreshAndGetAuthenticationToken(HttpServletRequest request) {
         String token = request.getHeader(tokenHeader);
         String username = jwtTokenUtil.getUsernameFromToken(token);
-        User user = userService.loadUserByUsername(username);
+        TrustUser trustUser = trustUserService.loadUserByUsername(username);
 
-        if (jwtTokenUtil.canTokenBeRefreshed(token, user.getLastPasswordResetDate())) {
+        if (jwtTokenUtil.canTokenBeRefreshed(token, trustUser.getLastPasswordResetDate())) {
             String refreshedToken = jwtTokenUtil.refreshToken(token);
             return ResponseEntity.ok(refreshedToken);
         } else {

@@ -10,8 +10,8 @@ import org.springframework.context.annotation.Configuration;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import org.webtree.trust.domain.User;
-import org.webtree.trust.domain.AuthDetals;
+import org.webtree.trust.domain.AuthDetails;
+import org.webtree.trust.domain.TrustUser;
 
 
 @ComponentScan("org.webtree.trust")
@@ -25,14 +25,14 @@ public class ModelMapperConfig {
     public ModelMapper mapper() {
         ModelMapper modelMapper = new ModelMapper();
         /* modelMapper.addConverter(new UserDTOToUserConverter(passwordEncoder()));*/
-        modelMapper.createTypeMap(AuthDetals.class, User.class).addMappings(
+        modelMapper.createTypeMap(AuthDetails.class, TrustUser.class).addMappings(
                 mapper ->
                         mapper
                                 .using(ctx -> {
                                     String encodedPass = ctx.getSource().toString();
                                     return passwordEncoder.encode(encodedPass);
                                 })
-                                .map(AuthDetals::getPassword, User::setPassword)
+                                .map(AuthDetails::getPassword, TrustUser::setPassword)
         );
         return modelMapper;
     }

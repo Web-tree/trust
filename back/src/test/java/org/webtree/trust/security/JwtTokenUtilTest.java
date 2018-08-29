@@ -140,7 +140,7 @@ public class JwtTokenUtilTest {
     }
 
     private Map<String, Object> createClaims(String creationDate) {
-        Map<String, Object> claims = new HashMap();
+        Map<String, Object> claims = new HashMap<>();
         claims.put(JwtTokenUtil.CLAIM_KEY_USERNAME, TEST_USERNAME);
         claims.put(JwtTokenUtil.CLAIM_KEY_AUDIENCE, "testAudience");
         claims.put(JwtTokenUtil.CLAIM_KEY_CREATED, DateUtil.parseDatetime(creationDate));

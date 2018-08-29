@@ -26,7 +26,7 @@ public class SocialServiceTest extends AbstractSpringTest {
     private SocialServicesHolder holder;
 
     @Mock
-    private FBUserService fbUserService;
+    private FbUserService fbUserService;
 
     private SocialService service;
 

@@ -8,7 +8,7 @@ import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.webtree.trust.exception.ProviderNotSupportedException;
 import org.mockito.Mock;
-import org.webtree.trust.service.FBUserService;
+import org.webtree.trust.service.FbUserService;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class SocialServicesHolderTest {
 
     @Rule public ExpectedException exception = ExpectedException.none();
-    @Mock private FBUserService service;
+    @Mock private FbUserService service;
 
     private SocialServicesHolder holder;
 

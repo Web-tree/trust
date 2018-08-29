@@ -17,7 +17,7 @@ import org.webtree.trust.domain.SocialConnectionInfo;
 import org.webtree.trust.exception.DataSavingException;
 import org.webtree.trust.exception.ProfileAlreadyLinkedWithAnotherAccountException;
 import org.webtree.trust.exception.ProfileAlreadyLinkedWithCurrentAccountException;
-import org.webtree.trust.repository.social.FBUserRepository;
+import org.webtree.trust.repository.social.FbUserRepository;
 import org.webtree.trust.social.FacebookTemplateFactory;
 import org.webtree.trust.util.ObjectBuilderHelper;
 
@@ -36,7 +36,7 @@ public class FBTUserServiceTest {
 
     private final static String TRUST_USER_ID = "54321";
 
-    @Mock private FBUserRepository repo;
+    @Mock private FbUserRepository repo;
     @Mock private FacebookTemplateFactory factory;
     @Mock private FacebookTemplate template;
     @Mock private ModelMapper modelMapper;
@@ -44,7 +44,7 @@ public class FBTUserServiceTest {
     @Mock private UserOperations operations;
 
     private ObjectBuilderHelper helper = new ObjectBuilderHelper();
-    private FBUserService service;
+    private FbUserService service;
     private FacebookUser userFromApi;
     private FacebookUser userFromDB;
     private SocialConnectionInfo info;
@@ -55,7 +55,7 @@ public class FBTUserServiceTest {
 
     @Before
     public void setUp() {
-        service = new FBUserService(repo, modelMapper, factory);
+        service = new FbUserService(repo, modelMapper, factory);
         userFromApi = helper.buildFacebookUser();
         userFromDB = helper.buildFacebookUserWithTrustUserId();
         info = helper.buildInfo();

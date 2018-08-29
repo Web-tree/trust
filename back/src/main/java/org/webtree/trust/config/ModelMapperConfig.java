@@ -18,21 +18,25 @@ import org.webtree.trust.domain.TrustUser;
 @Configuration()
 public class ModelMapperConfig {
 
+    private final PasswordEncoder passwordEncoder;
+
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    public ModelMapperConfig(PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @Bean
     public ModelMapper mapper() {
         ModelMapper modelMapper = new ModelMapper();
         /* modelMapper.addConverter(new UserDTOToUserConverter(passwordEncoder()));*/
         modelMapper.createTypeMap(AuthDetails.class, TrustUser.class).addMappings(
-                mapper ->
-                        mapper
-                                .using(ctx -> {
-                                    String encodedPass = ctx.getSource().toString();
-                                    return passwordEncoder.encode(encodedPass);
-                                })
-                                .map(AuthDetails::getPassword, TrustUser::setPassword)
+            mapper ->
+                    mapper
+                            .using(ctx -> {
+                                String encodedPass = ctx.getSource().toString();
+                                return passwordEncoder.encode(encodedPass);
+                            })
+                            .map(AuthDetails::getPassword, TrustUser::setPassword)
         );
         return modelMapper;
     }

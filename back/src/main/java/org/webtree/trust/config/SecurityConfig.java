@@ -30,14 +30,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtAuthenticationEntryPoint unauthorizedHandler;
 
     @Autowired
-    public SecurityConfig(TrustUserService trustUserService, JwtTokenUtil tokenUtil, JwtAuthenticationEntryPoint unauthorizedHandler) {
+    public SecurityConfig(TrustUserService trustUserService,
+                          JwtTokenUtil tokenUtil,
+                          JwtAuthenticationEntryPoint unauthorizedHandler) {
         this.trustUserService = trustUserService;
         this.tokenUtil = tokenUtil;
         this.unauthorizedHandler = unauthorizedHandler;
     }
 
     @Autowired
-    public void configureAuthentication(AuthenticationManagerBuilder authenticationManagerBuilder, TrustUserService trustUserService) throws Exception {
+    public void configureAuthentication(AuthenticationManagerBuilder authenticationManagerBuilder,
+                                        TrustUserService trustUserService) throws Exception {
 
         authenticationManagerBuilder
                 .userDetailsService(trustUserService)

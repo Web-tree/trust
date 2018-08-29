@@ -36,6 +36,8 @@ public class TrustUserServiceTest {
     private TrustUserRepository repo;
     @Mock
     private TrustUserLockRepository lockRepo;
+    @Mock
+    private IdService idService;
 
     private TrustUserService service;
     private ObjectBuilderHelper objectBuilderHelper = new ObjectBuilderHelper();
@@ -43,7 +45,7 @@ public class TrustUserServiceTest {
 
     @Before
     public void setUp() throws Exception {
-        service = new TrustUserService(repo, lockRepo);
+        service = new TrustUserService(repo, lockRepo, idService);
         user = objectBuilderHelper.buildNewUser();
     }
 
@@ -87,8 +89,10 @@ public class TrustUserServiceTest {
 
     @Test
     public void shouldGenerateIdIfItIsNull() {
+        String id = "someId";
+        given(idService.generateId()).willReturn(id);
         TrustUser newUser = service.createUser(user);
-        assertThat(newUser.getId()).isNotEmpty();
+        assertThat(newUser.getId()).isEqualTo(id);
         assertThat(newUser).isEqualTo(user);
     }
 

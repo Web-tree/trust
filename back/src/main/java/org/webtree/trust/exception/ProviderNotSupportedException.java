@@ -8,5 +8,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class ProviderNotSupportedException extends RuntimeException {
 
     public ProviderNotSupportedException(String providerId) {
-    super("No SocialAdapter for Provider [" + providerId + "] is registered"); }
+        super("No SocialAdapter for Provider [" + providerId + "] is registered");
+    }
 }

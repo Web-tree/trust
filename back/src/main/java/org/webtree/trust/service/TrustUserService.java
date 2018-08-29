@@ -18,11 +18,15 @@ public class TrustUserService implements UserDetailsService {
 
     private TrustUserRepository repository;
     private TrustUserLockRepository lockRepository;
+    private IdService idService;
 
     @Autowired
-    public TrustUserService(TrustUserRepository repository, TrustUserLockRepository lockRepository) {
+    public TrustUserService(TrustUserRepository repository,
+                            TrustUserLockRepository lockRepository,
+                            IdService idService) {
         this.lockRepository = lockRepository;
         this.repository = repository;
+        this.idService = idService;
     }
 
     public TrustUser save(TrustUser trustUser) {
@@ -53,7 +57,7 @@ public class TrustUserService implements UserDetailsService {
         if (user.getId() != null) {
             throw new UserAlreadyHasIdException();
         }
-        user.setId(UUIDService.generateUUID());
+        user.setId(idService.generateId());
         return user;
     }
 

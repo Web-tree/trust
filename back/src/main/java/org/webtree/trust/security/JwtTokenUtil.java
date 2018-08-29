@@ -6,10 +6,8 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-
 import org.springframework.stereotype.Component;
 import org.webtree.trust.common.utils.TimeProvider;
-
 import org.webtree.trust.domain.TrustUser;
 
 import java.io.Serializable;
@@ -143,11 +141,9 @@ public class JwtTokenUtil implements Serializable {
         final String username = getUsernameFromToken(token);
         final Date created = getIssuedAtDateFromToken(token);
         //final Date expiration = getExpirationDateFromToken(token);
-        return (
-                username.equals(trustUser.getUsername())
+        return username.equals(trustUser.getUsername())
                         && !isTokenExpired(token)
-                        && !isCreatedBeforeLastPasswordReset(created, trustUser.getLastPasswordResetDate())
-        );
+                        && !isCreatedBeforeLastPasswordReset(created, trustUser.getLastPasswordResetDate());
     }
 
     private Date calculateExpirationDate(Date createdDate) {

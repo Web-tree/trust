@@ -6,11 +6,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * Created by Udjin Skobelev on 12.08.2018.
  */
-public class UUIDServiceTest {
+public class IdServiceTest {
 
     @Test
     public void shouldGenerateUUID() {
-        String uuid = UUIDService.generateUUID();
+        String uuid = new IdService().generateId();
         assertThat(uuid).isNotEmpty();
     }
 }

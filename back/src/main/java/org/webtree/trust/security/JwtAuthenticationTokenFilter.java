@@ -1,7 +1,6 @@
 package org.webtree.trust.security;
 
 
-
 import io.jsonwebtoken.ExpiredJwtException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -14,12 +13,11 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.webtree.trust.domain.TrustUser;
 import org.webtree.trust.service.TrustUserService;
 
-
+import java.io.IOException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
@@ -38,7 +36,9 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain chain) throws ServletException, IOException {
         final String requestHeader = request.getHeader(this.tokenHeader);
 
         String username = null;
@@ -59,14 +59,15 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
         logger.info("checking authentication for user " + username);
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-            // It is not compelling necessary to load the use details from the database. You could also store the information
-            // in the token and read it from it. It's up to you ;)
-           TrustUser trustUser = this.trustUserService.loadUserByUsername(username);
+            // It is not compelling necessary to load the use details from the database.
+            // You could also store the information in the token and read it from it. It's up to you ;)
+            TrustUser trustUser = this.trustUserService.loadUserByUsername(username);
 
-            // For simple validation it is completely sufficient to just check the token integrity. You don't have to call
-            // the database compellingly. Again it's up to you ;)
+            // For simple validation it is completely sufficient to just check the token integrity.
+            // You don't have to call the database compellingly. Again it's up to you ;)
             if (trustUser != null && jwtTokenUtil.validateToken(authToken, trustUser)) {
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(trustUser, null, trustUser.getAuthorities());
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(trustUser,
+                        null, trustUser.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 logger.info("authenticated trustUser " + username + ", setting security context");
                 SecurityContextHolder.getContext().setAuthentication(authentication);

@@ -10,9 +10,9 @@ import org.webtree.trust.AbstractSpringTest;
 import org.webtree.trust.domain.AuthDetails;
 import org.webtree.trust.domain.TrustUser;
 import org.webtree.trust.repository.TrustUserLockRepository;
-import org.webtree.trust.repository.social.FBUserRepository;
+import org.webtree.trust.repository.social.FbUserRepository;
 import org.webtree.trust.repository.TrustUserRepository;
-import org.webtree.trust.repository.social.PrivateFBUserRepository;
+import org.webtree.trust.repository.social.PrivateFbUserRepository;
 import org.webtree.trust.util.ObjectBuilderHelper;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -22,9 +22,9 @@ public class AuthDetailsMapperTest extends AbstractSpringTest {
     @MockBean
     private TrustUserRepository trustUserRepository;
     @MockBean
-    private FBUserRepository userRepository;
+    private FbUserRepository userRepository;
     @MockBean
-    private PrivateFBUserRepository privateFBUserRepository;
+    private PrivateFbUserRepository privateFbUserRepository;
     @MockBean
     private TrustUserLockRepository lockRepository;
 

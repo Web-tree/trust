@@ -3,9 +3,11 @@ package org.webtree.trust.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.webtree.trust.domain.SocialConnectionInfo;
 import org.webtree.trust.domain.TrustUser;
 import org.webtree.trust.service.SocialService;
@@ -23,9 +25,10 @@ public class SocialController extends AbstractController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> addConnection(@RequestBody SocialConnectionInfo socialConnectionInfo, Authentication authentication) {
+    public ResponseEntity<?> addConnection(@RequestBody SocialConnectionInfo socialConnectionInfo,
+                                           Authentication authentication) {
         TrustUser user = (TrustUser) authentication.getPrincipal();
         socialService.addSocialConnection(socialConnectionInfo, user.getId());
         return ResponseEntity.status(HttpStatus.CREATED).build();
-        }
+    }
 }

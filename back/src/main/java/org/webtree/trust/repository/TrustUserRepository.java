@@ -13,8 +13,8 @@ import java.util.Optional;
 @Repository
 public interface TrustUserRepository extends CassandraRepository<TrustUser,String> {
 
-    @Query("INSERT INTO trust_user (username, password, id) " +
-            "VALUES (:#{#trustUser.username}, :#{#trustUser.password},:#{#trustUser.id}) IF NOT EXISTS")
+    @Query("INSERT INTO trust_user (username, password, id) "
+            + "VALUES (:#{#trustUser.username}, :#{#trustUser.password},:#{#trustUser.id}) IF NOT EXISTS")
     boolean saveIfNotExists(@Param("trustUser") TrustUser trustUser);
 
     Optional<TrustUser> findByUsername(String username);

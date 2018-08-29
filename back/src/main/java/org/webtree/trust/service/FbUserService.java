@@ -11,21 +11,22 @@ import org.webtree.trust.domain.SocialConnectionInfo;
 import org.webtree.trust.exception.DataSavingException;
 import org.webtree.trust.exception.ProfileAlreadyLinkedWithAnotherAccountException;
 import org.webtree.trust.exception.ProfileAlreadyLinkedWithCurrentAccountException;
-import org.webtree.trust.repository.social.FBUserRepository;
+import org.webtree.trust.repository.social.FbUserRepository;
 import org.webtree.trust.social.FacebookTemplateFactory;
 
 import java.util.Optional;
 
 
 @Service
-public class FBUserService implements SocialUserService {
+public class FbUserService implements SocialUserService {
 
     private ModelMapper modelMapper;
-    private FBUserRepository fbRepository;
+    private FbUserRepository fbRepository;
     private FacebookTemplateFactory factory;
 
     @Autowired
-    public FBUserService(FBUserRepository userRepository, ModelMapper modelMapper, FacebookTemplateFactory facebookTemplateFactory) {
+    public FbUserService(FbUserRepository userRepository, ModelMapper modelMapper,
+                         FacebookTemplateFactory facebookTemplateFactory) {
         this.modelMapper = modelMapper;
         this.fbRepository = userRepository;
         this.factory = facebookTemplateFactory;

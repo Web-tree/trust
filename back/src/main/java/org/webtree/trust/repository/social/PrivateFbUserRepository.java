@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 import org.webtree.trust.domain.FacebookUser;
 
 @Repository
-public interface PrivateFBUserRepository extends CassandraRepository<FacebookUser,String> { }
+public interface PrivateFbUserRepository extends CassandraRepository<FacebookUser, String> {
+}

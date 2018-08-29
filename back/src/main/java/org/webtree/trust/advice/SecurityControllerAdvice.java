@@ -10,7 +10,11 @@ import org.springframework.security.authentication.InternalAuthenticationService
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
-import org.webtree.trust.exception.*;
+import org.webtree.trust.exception.DataSavingException;
+import org.webtree.trust.exception.ProfileAlreadyLinkedWithAnotherAccountException;
+import org.webtree.trust.exception.ProfileAlreadyLinkedWithCurrentAccountException;
+import org.webtree.trust.exception.ProviderNotSupportedException;
+import org.webtree.trust.exception.UserAlreadyHasIdException;
 
 import java.util.Locale;
 
@@ -34,25 +38,39 @@ public class SecurityControllerAdvice {
     }
 
     @ExceptionHandler(InternalAuthenticationServiceException.class)
-    public ResponseEntity<String> badUserNameHandler() { return createUnauthorizedError(LOGIN_ERROR); }
+    public ResponseEntity<String> badUserNameHandler() {
+        return createUnauthorizedError(LOGIN_ERROR);
+    }
 
     @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<String> badPasswordHandler() { return createUnauthorizedError(LOGIN_ERROR); }
+    public ResponseEntity<String> badPasswordHandler() {
+        return createUnauthorizedError(LOGIN_ERROR);
+    }
 
     @ExceptionHandler(ProfileAlreadyLinkedWithAnotherAccountException.class)
-    public ResponseEntity<String> linkedWithAnotherHandler() { return createBadRequestError(SOCIAL_LINKED_ANOTHER); }
+    public ResponseEntity<String> linkedWithAnotherHandler() {
+        return createBadRequestError(SOCIAL_LINKED_ANOTHER);
+    }
 
     @ExceptionHandler(ProfileAlreadyLinkedWithCurrentAccountException.class)
-    public ResponseEntity<String> LinkedWithCurrentHandler() { return createBadRequestError(SOCIAL_LINKED_CURRENT); }
+    public ResponseEntity<String> linkedWithCurrentHandler() {
+        return createBadRequestError(SOCIAL_LINKED_CURRENT);
+    }
 
     @ExceptionHandler(ProviderNotSupportedException.class)
-    public ResponseEntity<String> providerNotSupportedHandler() { return createBadRequestError(PROVIDER_NOT_SUPPORTED); }
+    public ResponseEntity<String> providerNotSupportedHandler() {
+        return createBadRequestError(PROVIDER_NOT_SUPPORTED);
+    }
 
     @ExceptionHandler(UserAlreadyHasIdException.class)
-    public ResponseEntity<String> incorrectDataPassedHandler() { return createBadRequestError(ALREADY_HAS_ID); }
+    public ResponseEntity<String> incorrectDataPassedHandler() {
+        return createBadRequestError(ALREADY_HAS_ID);
+    }
 
     @ExceptionHandler(DataSavingException.class)
-    public ResponseEntity<String> cantSaveInDBHandler() { return createBadRequestError(CANNOT_SAVE_DATA); }
+    public ResponseEntity<String> cantSaveInDbHandler() {
+        return createBadRequestError(CANNOT_SAVE_DATA);
+    }
 
     private ResponseEntity<String> createBadRequestError(String errorCode) {
         String errorMessage = messageSource.getMessage(errorCode, new Object[]{}, Locale.getDefault());

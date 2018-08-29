@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class FacebookTemplateFactory {
-    public FacebookTemplate create(String token){
+    public FacebookTemplate create(String token) {
         return new FacebookTemplate(token);
     }
 }

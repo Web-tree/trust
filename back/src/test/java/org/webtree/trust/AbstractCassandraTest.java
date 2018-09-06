@@ -1,6 +1,5 @@
 package org.webtree.trust;
 
-
 import org.cassandraunit.utils.EmbeddedCassandraServerHelper;
 import org.junit.ClassRule;
 import org.junit.Rule;
@@ -20,6 +19,7 @@ public abstract class AbstractCassandraTest extends AbstractSpringTest {
 
     @Rule
     public ClearDBRule clearDBRule = new ClearDBRule();
+
     @ClassRule
     public static CassandraTestRule cassandraTestRule = new CassandraTestRule();
 

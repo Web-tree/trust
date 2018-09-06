@@ -1,0 +1,25 @@
+<FindBugsFilter>
+
+    <!--Justification: Doesn't need to return after save, don't have autoincrement id.-->
+    <Match>
+        <Class name="org.webtree.trust.service.FbUserService"/>
+        <Bug pattern="RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT"/>
+        <Method name="saveUserData"/>
+    </Match>
+
+    <!--TODO: fix it-->
+    <Match>
+        <Class name="org.webtree.trust.domain.TrustUser"/>
+        <Bug pattern="EI_EXPOSE_REP"/>
+    </Match>
+
+    <Match>
+        <Class name="org.webtree.trust.domain.TrustUser$TrustUserBuilder"/>
+        <Bug pattern="EI_EXPOSE_REP2"/>
+    </Match>
+    <Match>
+        <Class name="org.webtree.trust.domain.TrustUser"/>
+        <Bug pattern="EI_EXPOSE_REP2"/>
+    </Match>
+
+</FindBugsFilter>

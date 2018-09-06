@@ -33,10 +33,12 @@ public class FbUserRepository implements CassandraRepository<FacebookUser, Strin
         return operations.insert(user, InsertOptions.builder().withIfNotExists().build()).wasApplied();
     }
 
+    @Override
     public FacebookUser save(FacebookUser user) {
         return privateRepo.save(user);
     }
 
+    @Override
     public Optional<FacebookUser> findById(String id) {
         return privateRepo.findById(id);
     }

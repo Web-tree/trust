@@ -1,22 +1,18 @@
 package org.webtree.trust.service;
 
-
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-
 import org.webtree.trust.domain.TrustUser;
 import org.webtree.trust.domain.UserLock;
 import org.webtree.trust.exception.UserAlreadyHasIdException;
 import org.webtree.trust.repository.TrustUserLockRepository;
-import org.webtree.trust.util.ObjectBuilderHelper;
-
 import org.webtree.trust.repository.TrustUserRepository;
+import org.webtree.trust.util.ObjectBuilderHelper;
 
 import java.util.Optional;
 
@@ -44,7 +40,7 @@ public class TrustUserServiceTest {
     private TrustUser user;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         service = new TrustUserService(repo, lockRepo, idService);
         user = objectBuilderHelper.buildNewUser();
     }

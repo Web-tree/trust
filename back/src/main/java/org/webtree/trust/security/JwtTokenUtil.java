@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 import org.webtree.trust.common.utils.TimeProvider;
 import org.webtree.trust.domain.TrustUser;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,7 +17,7 @@ import java.util.function.Function;
 
 
 @Component
-public class JwtTokenUtil implements Serializable {
+public class JwtTokenUtil {
 
     static final String CLAIM_KEY_USERNAME = "sub";
     static final String CLAIM_KEY_AUDIENCE = "aud";

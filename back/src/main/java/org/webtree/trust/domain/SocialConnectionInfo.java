@@ -4,13 +4,16 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.webtree.trust.provider.Provider;
+
+import javax.validation.constraints.NotNull;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class SocialConnectionInfo {
+    @NotNull
     private String provider;
+    @NotNull
     private String token;
 }

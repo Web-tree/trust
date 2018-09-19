@@ -13,6 +13,9 @@ import {Subject} from "rxjs/internal/Subject";
 import {LoginComponent} from './login/login.component';
 import {AuthServiceConfig, FacebookLoginProvider, SocialLoginModule} from "angular5-social-login";
 import {environment} from "../environments/environment";
+import {TokenService} from "./_services/token.service";
+import {AuthenticationService} from "./_services/authentication.service";
+import { SocialLoginComponent } from './social-login/social-login.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +23,8 @@ import {environment} from "../environments/environment";
     MenuComponent,
     AlertComponent,
     RegisterComponent,
-    LoginComponent
+    LoginComponent,
+    SocialLoginComponent
   ],
   imports: [
     BrowserModule,
@@ -30,8 +34,10 @@ import {environment} from "../environments/environment";
     HttpClientModule
   ],
   providers: [
+    AuthenticationService,
     Subject,
     AlertService,
+    TokenService,
     {
       provide: AuthServiceConfig,
       useFactory: getAuthServiceConfigs

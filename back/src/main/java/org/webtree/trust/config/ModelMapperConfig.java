@@ -28,7 +28,6 @@ public class ModelMapperConfig {
     @Bean
     public ModelMapper mapper() {
         ModelMapper modelMapper = new ModelMapper();
-        /* modelMapper.addConverter(new UserDTOToUserConverter(passwordEncoder()));*/
         modelMapper.createTypeMap(AuthDetails.class, TrustUser.class).addMappings(
             mapper ->
                     mapper

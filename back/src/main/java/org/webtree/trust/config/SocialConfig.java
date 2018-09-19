@@ -11,8 +11,8 @@ import org.springframework.social.connect.ConnectionFactoryLocator;
 import org.springframework.social.connect.support.ConnectionFactoryRegistry;
 import org.springframework.social.facebook.connect.FacebookConnectionFactory;
 import org.springframework.social.security.AuthenticationNameUserIdSource;
-import org.webtree.trust.service.FbUserService;
-import org.webtree.trust.social.SocialServicesHolder;
+import org.webtree.trust.service.social.FacebookService;
+import org.webtree.trust.social.SocialServicesProvider;
 
 @ComponentScan("org.webtree.trust")
 @Configuration
@@ -41,9 +41,9 @@ public class SocialConfig {
     }
 
     @Bean
-    public SocialServicesHolder services() {
-        SocialServicesHolder holder = new SocialServicesHolder();
-        holder.addService("facebook", applicationContext.getBean(FbUserService.class));
+    public SocialServicesProvider services() {
+        SocialServicesProvider holder = new SocialServicesProvider();
+        holder.addService("facebook", applicationContext.getBean(FacebookService.class));
         return holder;
     }
 }

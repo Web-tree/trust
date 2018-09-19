@@ -1,13 +1,17 @@
 package org.webtree.trust.repository.social;
 
+import static org.springframework.data.cassandra.core.query.Criteria.where;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.cassandra.core.CassandraOperations;
 import org.springframework.data.cassandra.core.InsertOptions;
-import org.springframework.data.cassandra.repository.CassandraRepository;
+import org.springframework.data.cassandra.core.query.Query;
+import org.springframework.data.cassandra.core.query.Update;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Repository;
 import org.webtree.trust.domain.FacebookUser;
+import org.webtree.trust.social.SocialRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,17 +22,18 @@ import java.util.Optional;
  */
 
 @Repository
-public class FbUserRepository implements CassandraRepository<FacebookUser, String> {
+public class FacebookRepository implements SocialRepository<FacebookUser> {
 
     private PrivateFbUserRepository privateRepo;
     private CassandraOperations operations;
 
     @Autowired
-    public FbUserRepository(PrivateFbUserRepository privateRepo, CassandraOperations operations) {
+    public FacebookRepository(PrivateFbUserRepository privateRepo, CassandraOperations operations) {
         this.privateRepo = privateRepo;
         this.operations = operations;
     }
 
+    @Override
     public boolean saveIfNotExists(FacebookUser user) {
         return operations.insert(user, InsertOptions.builder().withIfNotExists().build()).wasApplied();
     }

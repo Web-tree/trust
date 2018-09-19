@@ -10,5 +10,5 @@ import java.lang.annotation.RetentionPolicy;
 public @interface WithMockCustomUser {
 
     String username() default "user1";
-    String userId() default "trustUserId";
+    String userId() default "654321";
 }

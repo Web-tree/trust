@@ -8,7 +8,7 @@ import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.webtree.trust.exception.ProviderNotSupportedException;
 import org.mockito.Mock;
-import org.webtree.trust.service.FbUserService;
+import org.webtree.trust.service.social.FacebookService;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -16,15 +16,19 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Created by Udjin Skobelev on 13.08.2018.
  */
 @RunWith(MockitoJUnitRunner.class)
-public class SocialServicesHolderTest {
+public class SocialServicesProviderTest {
 
-    @Rule public ExpectedException exception = ExpectedException.none();
-    @Mock private FbUserService service;
+    @Rule
+    public ExpectedException exception = ExpectedException.none();
+    @Mock
+    private FacebookService service;
 
-    private SocialServicesHolder holder;
+    private SocialServicesProvider holder;
 
     @Before
-    public void setUp() { holder = new SocialServicesHolder(); }
+    public void setUp() {
+        holder = new SocialServicesProvider();
+    }
 
     @Test
     public void shouldAddAndGetService() {
@@ -34,7 +38,7 @@ public class SocialServicesHolderTest {
     }
 
     @Test
-    public void shouldThrowExceptionIfDoesNotExist(){
+    public void shouldThrowExceptionIfDoesNotExist() {
         exception.expect(ProviderNotSupportedException.class);
         holder.getService("someRandomName");
     }

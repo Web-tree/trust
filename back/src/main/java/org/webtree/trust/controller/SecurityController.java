@@ -41,7 +41,7 @@ public class SecurityController extends AbstractController {
     }
 
     @PostMapping("${jwt.route.authentication.path}")
-    public ResponseEntity<?> login(@RequestBody AuthDetails authDetails/*, Device device*/) {
+    public ResponseEntity<?> login(@RequestBody AuthDetails authDetails) {
         Authentication authentication =
                 authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                         authDetails.getUsername(), authDetails.getPassword()));
@@ -49,7 +49,7 @@ public class SecurityController extends AbstractController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         TrustUser trustUser = trustUserService.loadUserByUsername(authDetails.getUsername());
-        return ResponseEntity.ok(jwtTokenUtil.generateToken(trustUser/*, device)*/));
+        return ResponseEntity.ok(jwtTokenUtil.generateToken(trustUser));
     }
 
     @PostMapping

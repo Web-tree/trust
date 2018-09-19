@@ -7,13 +7,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
+import org.springframework.social.InvalidAuthorizationException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
-import org.webtree.trust.exception.DataSavingException;
 import org.webtree.trust.exception.ProfileAlreadyLinkedWithAnotherAccountException;
 import org.webtree.trust.exception.ProfileAlreadyLinkedWithCurrentAccountException;
 import org.webtree.trust.exception.ProviderNotSupportedException;
+import org.webtree.trust.exception.UnexpectedSocialRepositoryResponseException;
 import org.webtree.trust.exception.UserAlreadyHasIdException;
 
 import java.util.Locale;
@@ -31,6 +32,7 @@ public class SecurityControllerAdvice {
     private static final String PROVIDER_NOT_SUPPORTED = "social.provider.notSupported";
     private static final String CANNOT_SAVE_DATA = "social.data.save.exception";
     private static final String ALREADY_HAS_ID = "user.create.exception";
+    private static final String INVALID_ACCESS_TOKEN = "social.invalidToken";
 
     @Autowired
     public SecurityControllerAdvice(MessageSource messageSource) {
@@ -67,9 +69,14 @@ public class SecurityControllerAdvice {
         return createBadRequestError(ALREADY_HAS_ID);
     }
 
-    @ExceptionHandler(DataSavingException.class)
+    @ExceptionHandler(UnexpectedSocialRepositoryResponseException.class)
     public ResponseEntity<String> cantSaveInDbHandler() {
         return createBadRequestError(CANNOT_SAVE_DATA);
+    }
+
+    @ExceptionHandler(InvalidAuthorizationException.class)
+    public ResponseEntity<String> invalidAccessTokenHandler() {
+        return createBadRequestError(INVALID_ACCESS_TOKEN);
     }
 
     private ResponseEntity<String> createBadRequestError(String errorCode) {

@@ -40,10 +40,10 @@ public class ObjectBuilderHelper {
     }
 
     public FacebookUser buildFacebookUser() {
-        return FacebookUser.builder().firstName(USERNAME).id(FB_USER_ID).build();
+        return FacebookUser.builder().firstName(USERNAME).id(FB_USER_ID).name("name").build();
     }
     public FacebookUser buildFacebookUserWithTrustUserId() {
-        return FacebookUser.builder().firstName(USERNAME).id(FB_USER_ID).trustUserId("987654321").build();
+        return FacebookUser.builder().firstName(USERNAME).id(FB_USER_ID).name("name").trustUserId("987654321").build();
     }
 
     public SocialConnectionInfo buildInfo() {

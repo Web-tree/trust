@@ -47,7 +47,7 @@ describe('RegisterComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('When put inputs it add to the model', () => {
+  it('#When put inputs it add to the model', () => {
     fixture.whenStable().then(() => {
 
       expect(component.model.username).toBeNull();
@@ -63,7 +63,7 @@ describe('RegisterComponent', () => {
     });
   });
 
-  it('When click register model passes to service', () => {
+  it('#When click register model passes to service', () => {
 
     let user: User = new User("someUsername", "somePassword");
     component.model = user;

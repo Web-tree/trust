@@ -1,10 +1,11 @@
 package org.webtree.trust.service;
 
-
+import com.datastax.driver.core.utils.UUIDs;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.webtree.trust.domain.SocialUser;
 import org.webtree.trust.domain.TrustUser;
 import org.webtree.trust.domain.UserLock;
 import org.webtree.trust.exception.UserAlreadyHasIdException;
@@ -65,12 +66,9 @@ public class TrustUserService implements UserDetailsService {
         return repository.findById(id);
     }
 
-
     @Override
     public TrustUser loadUserByUsername(String username) {
         Optional<TrustUser> user = repository.findByUsername(username);
         return user.orElseThrow(() -> new UsernameNotFoundException("User " + username + " not found"));
     }
-
-
 }

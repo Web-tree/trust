@@ -3,16 +3,20 @@ package org.webtree.trust.service;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+
 import org.webtree.trust.domain.TrustUser;
 import org.webtree.trust.domain.UserLock;
 import org.webtree.trust.exception.UserAlreadyHasIdException;
 import org.webtree.trust.repository.TrustUserLockRepository;
-import org.webtree.trust.repository.TrustUserRepository;
 import org.webtree.trust.util.ObjectBuilderHelper;
+
+import org.webtree.trust.repository.TrustUserRepository;
 
 import java.util.Optional;
 
@@ -26,6 +30,9 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 @RunWith(MockitoJUnitRunner.class)
 public class TrustUserServiceTest {
 
+    private final static String ID = "id";
+    private final static String USERNAME = "username";
+
     @Rule
     public ExpectedException exception = ExpectedException.none();
     @Mock
@@ -36,14 +43,14 @@ public class TrustUserServiceTest {
     private IdService idService;
 
     private TrustUserService service;
-    private ObjectBuilderHelper objectBuilderHelper = new ObjectBuilderHelper();
+    private ObjectBuilderHelper helper = new ObjectBuilderHelper();
     private TrustUser user;
 
     @Before
     public void setUp() {
-        service = new TrustUserService(repo, lockRepo, idService);
-        user = objectBuilderHelper.buildNewUser();
-    }
+        service = new TrustUserService(repo, lockRepo,idService);
+        user = helper.buildNewUser();
+        }
 
     @Test
     public void shouldCallRepositoryAndReturnSavedUser() {
@@ -85,11 +92,11 @@ public class TrustUserServiceTest {
 
     @Test
     public void shouldGenerateIdIfItIsNull() {
-        String id = "someId";
+        String id = "id";
         given(idService.generateId()).willReturn(id);
         TrustUser newUser = service.createUser(user);
-        assertThat(newUser.getId()).isEqualTo(id);
         assertThat(newUser).isEqualTo(user);
+        assertThat(user.getId()).isEqualTo(id);
     }
 
     @Test(expected = UserAlreadyHasIdException.class)

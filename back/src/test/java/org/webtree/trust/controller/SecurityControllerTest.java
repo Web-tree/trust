@@ -1,6 +1,7 @@
 package org.webtree.trust.controller;
 
 
+import org.junit.Before;
 import org.junit.Test;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,6 @@ import org.webtree.trust.domain.AuthDetails;
 import org.webtree.trust.domain.TrustUser;
 import org.webtree.trust.security.JwtTokenUtil;
 import org.webtree.trust.service.TrustUserService;
-import org.webtree.trust.util.ObjectBuilderHelper;
 
 import java.util.Locale;
 
@@ -29,8 +29,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class SecurityControllerTest extends AbstractControllerTest {
 
-    private static final String TEST_USERNAME = "testUser";
-    private static final String TEST_PASS = "testPass";
+    private static final String TEST_USERNAME = "Johnny";
+    private static final String PASSWORD =
+            "a1b2a1b2a1b2a1b2a1b2a1b2a1b2a1b2" +
+                    "a1b2a1b2a1b2a1b2a1b2a1b2a1b2a1b2" +
+                    "a1b2a1b2a1b2a1b2a1b2a1b2a1b2a1b2" +
+                    "a1b2a1b2a1b2a1b2a1b2a1b2a1b2a1b2";
+
+    private static final String WRONG_PASSWORD =
+            "c1d2c1d2c1d2c1d2c1d2c1d2c1d2c1d2" +
+                    "c1d2c1d2c1d2c1d2c1d2c1d2c1d2c1d2" +
+                    "c1d2c1d2c1d2c1d2c1d2c1d2c1d2c1d2" +
+                    "c1d2c1d2c1d2c1d2c1d2c1d2c1d2c1d2";
 
     @MockBean
     private TrustUserService trustUserService;
@@ -41,28 +51,30 @@ public class SecurityControllerTest extends AbstractControllerTest {
     @Autowired
     private ModelMapper modelMapper;
 
-    private ObjectBuilderHelper objectBuilder = new ObjectBuilderHelper();
-
-
     @Autowired
     private MessageSource messageSource;
 
     @Autowired
     private JwtTokenUtil tokenUtil;
+    private AuthDetails authDetails;
+
+    @Override
+    @Before
+    public void setUp() {
+        super.setUp();
+        authDetails = AuthDetails.builder().username(TEST_USERNAME).password(PASSWORD).build();
+    }
 
     @Test
     public void whenLoginWithCorrectUser_shouldReturnValidToken() throws Exception {
-        //AuthDetals for request with nonEncoded password
-        AuthDetails authDetals = objectBuilder.buildAuthDetails();
-
         //TrustUser that is stored in DB with already encoded password
-        TrustUser trustUser = getUserFromUserDTO(authDetals);
+        TrustUser trustUser = getUserFromUserDTO(authDetails);
 
-        given(trustUserService.loadUserByUsername(authDetals.getUsername())).willReturn(trustUser);
+        given(trustUserService.loadUserByUsername(authDetails.getUsername())).willReturn(trustUser);
         MvcResult mvcResult = mockMvc.perform(
                 post("/rest/token/new")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(authDetals))
+                        .content(objectMapper.writeValueAsString(authDetails))
         )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.errors").doesNotExist())
@@ -80,23 +92,32 @@ public class SecurityControllerTest extends AbstractControllerTest {
 
     @Test
     public void whenLoginWithIncorrectUsername_shouldReturnErrorMessage() throws Exception {
-        AuthDetails authDetals = objectBuilder.buildAuthDetails();
-        given(trustUserService.loadUserByUsername(authDetals.getUsername())).willReturn(null);
+        given(trustUserService.loadUserByUsername(authDetails.getUsername())).willReturn(null);
         ResultActions actions = mockMvc.perform(
                 post("/rest/token/new")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(authDetals))
+                        .content(objectMapper.writeValueAsString(authDetails))
         );
 
         assertUnauthorized(actions);
     }
 
     @Test
-    public void whenLoginWithIncorrectPassword_shouldReturnErrorMessage() throws Exception {
-        AuthDetails authDetals = objectBuilder.buildAuthDetails();
+    public void whenLoginWithNotSha512Password_shouldReturnErrorMessage() throws Exception {
+        AuthDetails wrongPasswordUser = AuthDetails.builder().username(TEST_USERNAME).password("12345").build();
 
-        given(trustUserService.loadUserByUsername(authDetals.getUsername())).willReturn(getUserFromUserDTO(authDetals));
-        AuthDetails wrongPasswordUser = AuthDetails.builder().username(authDetals.getUsername()).password("123").build();
+        mockMvc.perform(
+                post("/rest/token/new")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(wrongPasswordUser)))
+                .andExpect(jsonPath("$").value("The password must be a representation of sha512"));
+    }
+
+    @Test
+    public void whenLoginWithWrongPassword_shouldReturnErrorMessage() throws Exception {
+        AuthDetails wrongPasswordUser = AuthDetails.builder().username(TEST_USERNAME).password(WRONG_PASSWORD).build();
+
+        given(trustUserService.loadUserByUsername(TEST_USERNAME)).willReturn(getUserFromUserDTO(authDetails));
 
         ResultActions actions = mockMvc.perform(
                 post("/rest/token/new")
@@ -107,19 +128,16 @@ public class SecurityControllerTest extends AbstractControllerTest {
         assertUnauthorized(actions);
     }
 
-
     @WithAnonymousUser
     @Test
     public void whenDoingRequestsWithValidTokenItShouldWork() throws Exception {
-        AuthDetails authDetals = objectBuilder.buildAuthDetails();
+        TrustUser trustUserWithEncodedPassword = getUserFromUserDTO(authDetails);
 
-        TrustUser trustUserWithEncodedPassword = getUserFromUserDTO(authDetals);
-
-        given(trustUserService.loadUserByUsername(authDetals.getUsername())).willReturn(trustUserWithEncodedPassword);
+        given(trustUserService.loadUserByUsername(authDetails.getUsername())).willReturn(trustUserWithEncodedPassword);
         MvcResult mvcResult = mockMvc.perform(
                 post("/rest/token/new")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(authDetals))
+                        .content(objectMapper.writeValueAsString(authDetails))
         )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.errors").doesNotExist())
@@ -135,7 +153,6 @@ public class SecurityControllerTest extends AbstractControllerTest {
                                 .param("userId", "12345")
                                 .header("Authorization", authorizationHeader))
                 .andExpect(status().isOk());
-
     }
 
     private void assertUnauthorized(ResultActions resultActions) throws Exception {
@@ -144,10 +161,7 @@ public class SecurityControllerTest extends AbstractControllerTest {
         resultActions
                 .andExpect(status().is(401))
                 .andExpect(jsonPath("$").value(errorMessage));
-
     }
-
-
 
     private TrustUser getUserFromUserDTO(AuthDetails authDetals) {
         return modelMapper.map(authDetals, TrustUser.class);

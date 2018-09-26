@@ -13,6 +13,10 @@ spring:
     facebook:
       app-id: 1580148318762130
       app-secret: 5b725168222acd2983a8822df4b84c75
+  security:
+    encoder:
+      password: passwordToChange
+      salt: 9e0b5328c644e94c
 
 jwt:
   header: Authorization
@@ -23,4 +27,4 @@ jwt:
       path: token/new
       refresh: refresh
 frontend:
-  origins: https://.webt-ree.org
+  origins: https://.web-tree.org

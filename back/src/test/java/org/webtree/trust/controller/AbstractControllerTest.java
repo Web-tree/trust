@@ -24,5 +24,4 @@ public abstract class AbstractControllerTest extends AbstractSpringTest {
     public void setUp() {
         objectMapper = new ObjectMapper();
     }
-
 }

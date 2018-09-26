@@ -29,6 +29,12 @@ public class UserController extends AbstractController {
 
     @PostMapping("register")
     public ResponseEntity<?> register(@RequestBody AuthDetails authDetails) {
+        int passwordLength = authDetails.getPassword().length();
+
+        if (passwordLength != 128) {
+            return ResponseEntity.badRequest().body("The password must be a representation of sha512");
+        }
+
         TrustUser userFromRequest = modelMapper.map(authDetails, TrustUser.class);
         TrustUser user = service.createUser(userFromRequest);
 

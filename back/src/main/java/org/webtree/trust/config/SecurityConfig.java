@@ -1,6 +1,7 @@
 package org.webtree.trust.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -13,8 +14,10 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import org.springframework.security.crypto.encrypt.Encryptors;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.webtree.trust.security.CombinedPasswordEncoder;
 import org.webtree.trust.security.JwtAuthenticationEntryPoint;
 import org.webtree.trust.security.JwtAuthenticationTokenFilter;
 import org.webtree.trust.security.JwtTokenUtil;
@@ -40,23 +43,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     public void configureAuthentication(AuthenticationManagerBuilder authenticationManagerBuilder,
-                                        TrustUserService trustUserService) throws Exception {
+                                        TrustUserService trustUserService,
+                                        PasswordEncoder passwordEncoder) throws Exception {
 
         authenticationManagerBuilder
                 .userDetailsService(trustUserService)
-                .passwordEncoder(passwordEncoder());
-
+                .passwordEncoder(passwordEncoder);
     }
 
     @Bean
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
     }
 
     @Bean
@@ -79,7 +77,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 //.antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
-                .antMatchers("/rest/token/new", "/rest/user/register","/rest/social/login").permitAll()
+                .antMatchers("/rest/token/new", "/rest/user/register", "/rest/social/login").permitAll()
                 .anyRequest().authenticated();
 
         // Custom JWT based security filter

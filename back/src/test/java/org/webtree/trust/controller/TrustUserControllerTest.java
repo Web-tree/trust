@@ -11,6 +11,7 @@ import org.webtree.trust.domain.AuthDetails;
 import org.webtree.trust.domain.TrustUser;
 import org.webtree.trust.util.ObjectBuilderHelper;
 import org.webtree.trust.service.TrustUserService;
+
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -18,9 +19,24 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class TrustUserControllerTest extends AbstractControllerTest {
 
-    @Autowired private MockMvc mockMvc;
-    @MockBean private ModelMapper modelMapper;
-    @MockBean private TrustUserService service;
+    private final static String USERNAME = "JOHN_SNOW";
+
+    private static final String PASSWORD =
+            "a1b2a1b2a1b2a1b2a1b2a1b2a1b2a1b2" +
+                    "a1b2a1b2a1b2a1b2a1b2a1b2a1b2a1b2" +
+                    "a1b2a1b2a1b2a1b2a1b2a1b2a1b2a1b2" +
+                    "a1b2a1b2a1b2a1b2a1b2a1b2a1b2a1b2";
+
+    private static final String NOT_SHA512_MSG = "The password must be a representation of sha512";
+    private static final String USER_EXISTS_MSG = "User with this username already exists.";
+
+
+    @Autowired
+    private MockMvc mockMvc;
+    @MockBean
+    private ModelMapper modelMapper;
+    @MockBean
+    private TrustUserService service;
     private TrustUser user;
     private TrustUser userFromMapper;
     private AuthDetails authDetails;
@@ -31,7 +47,7 @@ public class TrustUserControllerTest extends AbstractControllerTest {
     @Before
     public void setUp() {
         super.setUp();
-        authDetails = builderHelper.buildAuthDetails();
+        authDetails = AuthDetails.builder().username(USERNAME).password(PASSWORD).build();
         userFromMapper = builderHelper.buildNewUser();
         user = builderHelper.buildNewUser();
         given(modelMapper.map(authDetails, TrustUser.class)).willReturn(userFromMapper);
@@ -47,7 +63,7 @@ public class TrustUserControllerTest extends AbstractControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(authDetails)))
                 .andExpect(status().isCreated());
-        }
+    }
 
     @Test
     public void shouldReturn4xxIfUserAlreadyExists() throws Exception {
@@ -58,7 +74,19 @@ public class TrustUserControllerTest extends AbstractControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(authDetails)))
                 .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$").value(USER_EXISTS_MSG))
                 .andExpect(jsonPath("$.errors").doesNotExist());
-        }
+    }
 
+    @Test
+    public void shouldReturnBadRequestIFPasswordIsNotSha512() throws Exception {
+        AuthDetails details = AuthDetails.builder().password("winter_is_coming").username(USERNAME).build();
+
+        mockMvc
+                .perform(post("/rest/user/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(details)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$").value(NOT_SHA512_MSG));
+    }
 }

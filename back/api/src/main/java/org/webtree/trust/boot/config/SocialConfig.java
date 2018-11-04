@@ -13,6 +13,7 @@ import org.springframework.social.facebook.connect.FacebookConnectionFactory;
 import org.springframework.social.security.AuthenticationNameUserIdSource;
 import org.webtree.trust.service.social.FacebookService;
 import org.webtree.trust.service.social.SocialServicesProvider;
+import org.webtree.trust.service.social.StackExchangeService;
 
 @ComponentScan("org.webtree.trust")
 @Configuration
@@ -44,6 +45,7 @@ public class SocialConfig {
     public SocialServicesProvider services() {
         SocialServicesProvider holder = new SocialServicesProvider();
         holder.addService("facebook", applicationContext.getBean(FacebookService.class));
+        holder.addService("stackexchange", applicationContext.getBean(StackExchangeService.class));
         return holder;
     }
 }

@@ -8,7 +8,6 @@ import org.webtree.trust.domain.TrustUser;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-@Deprecated
 public class ObjectBuilderHelper {
 
     private static final String PASSWORD = "pa$$word";

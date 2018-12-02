@@ -4,17 +4,17 @@ import {NgModule} from '@angular/core';
 import {AppComponent} from './app.component';
 import {MenuComponent} from './menu/menu.component';
 import {AlertComponent} from './alert/alert.component';
-import {AppRoutingModule} from './/app-routing.module';
+import {AppRoutingModule} from './app-routing.module';
 import {RegisterComponent} from './register/register.component';
-import {FormsModule} from "@angular/forms";
-import {HttpClientModule} from "@angular/common/http";
-import {AlertService} from "./_services/alert.service";
-import {Subject} from "rxjs/internal/Subject";
+import {FormsModule} from '@angular/forms';
+import {HttpClientModule} from '@angular/common/http';
+import {AlertService} from './_services/alert.service';
+import {Subject} from 'rxjs/internal/Subject';
 import {LoginComponent} from './login/login.component';
-import {AuthServiceConfig, FacebookLoginProvider, SocialLoginModule} from "angular5-social-login";
-import {environment} from "../environments/environment";
-import {TokenService} from "./_services/token.service";
-import {AuthenticationService} from "./_services/authentication.service";
+import {AuthServiceConfig, FacebookLoginProvider, SocialLoginModule} from 'angularx-social-login';
+import {environment} from '../environments/environment';
+import {TokenService} from './_services/token.service';
+import {AuthenticationService} from './_services/authentication.service';
 import { SocialLoginComponent } from './social-login/social-login.component';
 
 @NgModule({

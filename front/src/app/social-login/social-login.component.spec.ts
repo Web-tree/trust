@@ -1,23 +1,23 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import {DebugElement} from "@angular/core";
-import {FormsModule} from "@angular/forms";
-import {RouterTestingModule} from "@angular/router/testing";
-import {HttpClientModule, HttpErrorResponse} from "@angular/common/http";
+import {DebugElement} from '@angular/core';
+import {FormsModule} from '@angular/forms';
+import {RouterTestingModule} from '@angular/router/testing';
+import {HttpClientModule, HttpErrorResponse} from '@angular/common/http';
 
-import {Subject} from "rxjs/internal/Subject";
-import {By} from "@angular/platform-browser";
+import {Subject} from 'rxjs/internal/Subject';
+import {By} from '@angular/platform-browser';
 
-import {AuthenticationService} from "../_services/authentication.service";
-import {TokenService} from "../_services/token.service";
-import {AlertService} from "../_services/alert.service";
-import {ActivatedRoute, Router} from "@angular/router";
-import {ConfigService} from "../_services/config.service";
-import {AuthService, SocialUser} from "angular5-social-login";
+import {AuthenticationService} from '../_services/authentication.service';
+import {TokenService} from '../_services/token.service';
+import {AlertService} from '../_services/alert.service';
+import {ActivatedRoute, Router} from '@angular/router';
+import {ConfigService} from '../_services/config.service';
+import {AuthService, SocialUser} from 'angularx-social-login';
 
-import {of} from "rxjs/internal/observable/of";
-import {throwError} from "rxjs/internal/observable/throwError";
-import {SocialLoginComponent} from "./social-login.component";
+import {of} from 'rxjs/internal/observable/of';
+import {throwError} from 'rxjs/internal/observable/throwError';
+import {SocialLoginComponent} from './social-login.component';
 
 describe('LoginComponent', () => {
   let component: SocialLoginComponent;
@@ -27,17 +27,20 @@ describe('LoginComponent', () => {
   let tokenService: TokenService;
   let router: Router;
   let alertService: AlertService;
-  let authService = jasmine.createSpyObj('AuthService', ['signIn']);
-  let token: string = 'randomToken';
+  const authService = jasmine.createSpyObj('AuthService', ['signIn']);
+  const token = 'randomToken';
 
-  const provider: string = 'unrealProvider';
-  let userData: SocialUser = {
+  const provider = 'unrealProvider';
+  const userData: SocialUser = {
     provider: 'randomWord',
-    token: 'a6s6d7f8g9h0j',
     id: '1234567654321',
     email: 'test@webtree.org',
-    name: 'randomUsername',
-    image: 'referenceToAvatar'
+    name: 'someUsername',
+    photoUrl: 'referenceToAvatar',
+    firstName: 'Myname',
+    lastName: 'Mysurname',
+    authToken: 'a6s6d7f8g9h0j',
+    idToken: 'weqwecqwcqwecwce'
   };
 
   beforeEach(async(() => {
@@ -45,7 +48,7 @@ describe('LoginComponent', () => {
       imports: [FormsModule, RouterTestingModule, HttpClientModule],
       providers: [
         {provide: AuthService, useValue: authService},
-        {provide: ActivatedRoute, useValue: {snapshot: {queryParams: "/"}}},
+        {provide: ActivatedRoute, useValue: {snapshot: {queryParams: '/'}}},
         Subject,
         TokenService,
         AlertService,
@@ -93,7 +96,7 @@ describe('LoginComponent', () => {
     spyOn(authenticationService, 'socialLogin').and.returnValue(of(token));
     component.socialSignIn(provider);
     loginFixture.whenStable().then(() => {
-      expect(authenticationService.socialLogin).toHaveBeenCalledWith(userData.provider, userData.token);
+      expect(authenticationService.socialLogin).toHaveBeenCalledWith(userData.provider, userData.authToken);
     });
   });
 
@@ -121,7 +124,7 @@ describe('LoginComponent', () => {
     spyOn(authenticationService, 'socialLogin').and.returnValue(throwError(new HttpErrorResponse({error: errorMsg})));
     component.socialSignIn(provider);
     loginFixture.whenStable().then(() => {
-      expect(alertService.error).toHaveBeenCalledWith(errorMsg)
+      expect(alertService.error).toHaveBeenCalledWith(errorMsg);
     });
   });
 });

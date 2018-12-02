@@ -1,21 +1,21 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {LoginComponent} from './login.component';
-import {DebugElement} from "@angular/core";
-import {FormsModule} from "@angular/forms";
-import {RouterTestingModule} from "@angular/router/testing";
-import {HttpClientModule} from "@angular/common/http";
+import {DebugElement} from '@angular/core';
+import {FormsModule} from '@angular/forms';
+import {RouterTestingModule} from '@angular/router/testing';
+import {HttpClientModule} from '@angular/common/http';
 
-import {Subject} from "rxjs/internal/Subject";
-import {By} from "@angular/platform-browser";
+import {Subject} from 'rxjs/internal/Subject';
+import {By} from '@angular/platform-browser';
 
-import {AuthenticationService} from "../_services/authentication.service";
-import {TokenService} from "../_services/token.service";
-import {AlertService} from "../_services/alert.service";
-import {ActivatedRoute, Router} from "@angular/router";
-import {ConfigService} from "../_services/config.service";
-import {AuthService} from "angular5-social-login";
-import {SocialLoginComponent} from "../social-login/social-login.component";
+import {AuthenticationService} from '../_services/authentication.service';
+import {TokenService} from '../_services/token.service';
+import {AlertService} from '../_services/alert.service';
+import {ActivatedRoute, Router} from '@angular/router';
+import {ConfigService} from '../_services/config.service';
+import {AuthService} from 'angularx-social-login';
+import {SocialLoginComponent} from '../social-login/social-login.component';
 
 
 describe('LoginComponent', () => {
@@ -26,7 +26,7 @@ describe('LoginComponent', () => {
   let tokenService: TokenService;
   let router: Router;
   let alertService: AlertService;
-  let authService = jasmine.createSpyObj('AuthService', ['signIn']);
+  const authService = jasmine.createSpyObj('AuthService', ['signIn']);
 
 
   beforeEach(async(() => {
@@ -34,14 +34,14 @@ describe('LoginComponent', () => {
       imports: [FormsModule, RouterTestingModule, HttpClientModule],
       providers: [
         {provide: AuthService, useValue: authService},
-        {provide: ActivatedRoute, useValue: {snapshot: {queryParams: "/"}}},
+        {provide: ActivatedRoute, useValue: {snapshot: {queryParams: '/'}}},
         Subject,
         TokenService,
         AlertService,
         ConfigService,
         AuthenticationService,
       ],
-      declarations: [LoginComponent,SocialLoginComponent]
+      declarations: [LoginComponent, SocialLoginComponent]
     })
       .compileComponents();
   }));

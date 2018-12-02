@@ -1,12 +1,12 @@
 import {Component, OnInit} from '@angular/core';
-import {AuthService, SocialUser} from "angular5-social-login";
-import {AlertService} from "../_services/alert.service";
-import {ActivatedRoute, Router} from "@angular/router";
-import {AuthenticationService} from "../_services/authentication.service";
-import {TokenService} from "../_services/token.service";
+import {AuthService, SocialUser} from 'angularx-social-login';
+import {AlertService} from '../_services/alert.service';
+import {ActivatedRoute, Router} from '@angular/router';
+import {AuthenticationService} from '../_services/authentication.service';
+import {TokenService} from '../_services/token.service';
 
 @Component({
-  selector: 'social-login',
+  selector: 'app-social-login',
   templateUrl: './social-login.component.html',
   styleUrls: ['./social-login.component.css']
 })
@@ -30,12 +30,12 @@ export class SocialLoginComponent implements OnInit {
 
   public socialSignIn(socialPlatform: string) {
     this.socialAuthService.signIn(socialPlatform).then((data) => {
-      this.login(data)
+      this.login(data);
     });
   }
 
   private login(userData: SocialUser) {
-    this.authenticationService.socialLogin(userData.provider, userData.token).subscribe(
+    this.authenticationService.socialLogin(userData.provider, userData.authToken).subscribe(
       token => {
         this.tokenService.saveToken(token);
         this.router.navigate([this.returnUrl]);

@@ -1,8 +1,8 @@
 import {Injectable} from '@angular/core';
-import 'rxjs/add/operator/map'
-import {TokenService} from "./token.service";
-import {HttpClient} from "@angular/common/http";
-import {ConfigService} from "./config.service";
+
+import {TokenService} from './token.service';
+import {HttpClient} from '@angular/common/http';
+import {ConfigService} from './config.service';
 
 @Injectable()
 export class AuthenticationService {
@@ -12,7 +12,7 @@ export class AuthenticationService {
   }
 
   socialLogin(provider: string, token: string) {
-    let body = {
+    const body = {
       provider: provider,
       token: token
     };

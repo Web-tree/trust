@@ -1,9 +1,8 @@
 import {Component, OnInit} from '@angular/core';
-import {Router} from "@angular/router";
-import {UserService} from "../_services/user.service";
-import {User} from "../_models/user";
-import {isSuccess} from "@angular/http/src/http_utils";
-import {AlertService} from "../_services/alert.service";
+import {Router} from '@angular/router';
+import {UserService} from '../_services/user.service';
+import {User} from '../_models/user';
+import {AlertService} from '../_services/alert.service';
 
 @Component({
   selector: 'app-register',
@@ -18,7 +17,7 @@ export class RegisterComponent implements OnInit {
   }
 
   model: User;
-  loading: boolean = false;
+  loading = false;
 
   ngOnInit() {
     this.model = new User(null, null);
@@ -30,9 +29,9 @@ export class RegisterComponent implements OnInit {
         this.router.navigate(['/login']);
       },
       error => {
-        this.alertService.error("Something goes wrong");
+        this.alertService.error('Something goes wrong');
       }
-    )
+    );
   }
 
 

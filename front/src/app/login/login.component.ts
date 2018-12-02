@@ -1,10 +1,10 @@
 import {Component, OnInit} from '@angular/core';
-import {AuthService} from "angular5-social-login";
-import {ActivatedRoute, Router} from "@angular/router";
-import {AuthenticationService} from "../_services/authentication.service";
-import {TokenService} from "../_services/token.service";
-import {AlertService} from "../_services/alert.service";
-import {SocialLoginComponent} from "../social-login/social-login.component";
+import {AuthService} from 'angularx-social-login';
+import {ActivatedRoute, Router} from '@angular/router';
+import {AuthenticationService} from '../_services/authentication.service';
+import {TokenService} from '../_services/token.service';
+import {AlertService} from '../_services/alert.service';
+import {SocialLoginComponent} from '../social-login/social-login.component';
 
 @Component({
   selector: 'app-login',

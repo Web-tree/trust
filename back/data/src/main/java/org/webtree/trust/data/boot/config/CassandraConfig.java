@@ -11,7 +11,6 @@ import org.springframework.data.cassandra.config.AbstractCassandraConfiguration;
 import org.springframework.data.cassandra.config.SchemaAction;
 import org.springframework.data.cassandra.core.cql.keyspace.CreateKeyspaceSpecification;
 import org.springframework.data.cassandra.core.cql.keyspace.KeyspaceOption;
-import org.springframework.data.cassandra.repository.config.EnableCassandraRepositories;
 
 import java.util.Collections;
 import java.util.List;
@@ -64,9 +63,9 @@ public class CassandraConfig extends AbstractCassandraConfiguration {
     @Override
     protected List<CreateKeyspaceSpecification> getKeyspaceCreations() {
         CreateKeyspaceSpecification specification = CreateKeyspaceSpecification.createKeyspace(keySpace)
-                .with(KeyspaceOption.DURABLE_WRITES, true)
-                .ifNotExists()
-                .withSimpleReplication(1L);
+            .with(KeyspaceOption.DURABLE_WRITES, true)
+            .ifNotExists()
+            .withSimpleReplication(1L);
         return Collections.singletonList(specification);
     }
 }

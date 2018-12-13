@@ -1,0 +1,16 @@
+#Default profile
+spring:
+  profiles:
+    active: test
+  security:
+    encoder:
+      password: longPassword
+      salt: 9e0b5328c644e94a
+jwt:
+  header: Authorization
+  secret: mySecret
+  expiration: 604800
+  route:
+    authentication:
+      path: token/new
+      refresh: refresh

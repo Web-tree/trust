@@ -18,8 +18,10 @@ import {AuthService, SocialUser} from 'angularx-social-login';
 import {of} from 'rxjs/internal/observable/of';
 import {throwError} from 'rxjs/internal/observable/throwError';
 import {SocialLoginComponent} from './social-login.component';
+import {promise} from "selenium-webdriver";
 
-describe('LoginComponent', () => {
+
+describe('SocialLoginComponent', () => {
   let component: SocialLoginComponent;
   let loginFixture: ComponentFixture<SocialLoginComponent>;
   let signInButton: DebugElement;
@@ -70,6 +72,7 @@ describe('LoginComponent', () => {
     component = loginFixture.componentInstance;
     authService.signIn.calls.reset();
     signInButton = loginFixture.debugElement.query(By.css('button'));
+    authService.signIn.and.returnValue(Promise.resolve(userData));
     loginFixture.detectChanges();
   });
 
@@ -84,7 +87,6 @@ describe('LoginComponent', () => {
   });
 
   it('#should make call to social provider api', async(() => {
-    authService.signIn.and.returnValue(Promise.resolve(userData));
     component.socialSignIn(provider);
     loginFixture.whenStable().then(() => {
       loginFixture.detectChanges();
@@ -92,39 +94,39 @@ describe('LoginComponent', () => {
     });
   }));
 
-  it('#should call backend api', () => {
+  it('#should call backend api', async(() => {
     spyOn(authenticationService, 'socialLogin').and.returnValue(of(token));
     component.socialSignIn(provider);
     loginFixture.whenStable().then(() => {
       expect(authenticationService.socialLogin).toHaveBeenCalledWith(userData.provider, userData.authToken);
     });
-  });
+  }));
 
-  it('#should get token form backend and save it', () => {
+  it('#should get token form backend and save it', async(() => {
     spyOn(authenticationService, 'socialLogin').and.returnValue(of(token));
     spyOn(tokenService, 'saveToken');
     component.socialSignIn(provider);
     loginFixture.whenStable().then(() => {
       expect(tokenService.saveToken).toHaveBeenCalledWith(token);
     });
-  });
+  }));
 
-  it('#should navigate to url when get data from backend', () => {
+  it('#should navigate to url when get data from backend', async(() => {
     spyOn(authenticationService, 'socialLogin').and.returnValue(of(token));
     spyOn(router, 'navigate');
     component.socialSignIn(provider);
     loginFixture.whenStable().then(() => {
       expect(router.navigate).toHaveBeenCalled();
     });
-  });
+  }));
 
-  it('#should handle error when backend response with error', () => {
+  it('#should handle error when backend response with error', async(() => {
     const errorMsg = 'Some error';
     spyOn(alertService, 'error');
     spyOn(authenticationService, 'socialLogin').and.returnValue(throwError(new HttpErrorResponse({error: errorMsg})));
     component.socialSignIn(provider);
     loginFixture.whenStable().then(() => {
       expect(alertService.error).toHaveBeenCalledWith(errorMsg);
-    });
-  });
+    })
+  }));
 });

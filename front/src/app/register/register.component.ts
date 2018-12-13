@@ -3,6 +3,7 @@ import {Router} from '@angular/router';
 import {UserService} from '../_services/user.service';
 import {User} from '../_models/user';
 import {AlertService} from '../_services/alert.service';
+import {sha512} from "js-sha512";
 
 @Component({
   selector: 'app-register',
@@ -24,12 +25,12 @@ export class RegisterComponent implements OnInit {
   }
 
   register() {
-    this.registerService.create(this.model).subscribe(
+    this.registerService.create(new User(this.model.username, sha512(this.model.password))).subscribe(
       onSuccess => {
         this.router.navigate(['/login']);
       },
       error => {
-        this.alertService.error('Something goes wrong');
+        this.alertService.error(error.error);
       }
     );
   }

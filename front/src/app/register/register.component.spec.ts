@@ -10,7 +10,7 @@ import {Subject} from "rxjs/internal/Subject";
 import {By} from "@angular/platform-browser";
 import {DebugElement} from "@angular/core";
 import {User} from "../_models/user";
-
+import {sha512} from "js-sha512";
 
 
 describe('RegisterComponent', () => {
@@ -47,7 +47,7 @@ describe('RegisterComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('#When put inputs it add to the model', () => {
+  it('#When put inputs it add to the model', async(() => {
     fixture.whenStable().then(() => {
 
       expect(component.model.username).toBeNull();
@@ -60,18 +60,20 @@ describe('RegisterComponent', () => {
       passwordEl.nativeElement.dispatchEvent(new Event('input'));
       expect(component.model.password).toBe(password);
 
-    });
-  });
+    })
+  }));
 
   it('#When click register model passes to service', () => {
 
     let user: User = new User("someUsername", "somePassword");
     component.model = user;
 
+    let userWithEncodedPass: User = new User(user.username, sha512(user.password));
+
     spyOn(component, "register").and.callThrough();
     submitEl.triggerEventHandler('ngSubmit', null);
 
     expect(component.register).toHaveBeenCalled();
-    expect(userService.create).toHaveBeenCalledWith(user);
+    expect(userService.create).toHaveBeenCalledWith(userWithEncodedPass);
   });
 });

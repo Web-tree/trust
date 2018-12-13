@@ -1,4 +1,4 @@
-package org.webtree.trust.security;
+package org.webtree.trust.service.security;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

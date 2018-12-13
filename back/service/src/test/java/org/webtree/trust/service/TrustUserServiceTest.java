@@ -64,7 +64,7 @@ public class TrustUserServiceTest {
 
     @Test
     public void shouldReturnFalseIfUserDoNotExistButCantMakeLock() {
-        given(repo.existsByUsername(user.getUsername())).willReturn(false);
+        given(repo.findByUsername(user.getUsername())).willReturn(Optional.empty());
         given(lockRepo.saveIfNotExist(any(UserLock.class))).willReturn(false);
         assertThat(service.saveIfNotExists(user)).isFalse();
         verify(repo, never()).save(user);
@@ -72,7 +72,7 @@ public class TrustUserServiceTest {
 
     @Test
     public void shouldReturnFalseIfUserExists() {
-        given(repo.existsByUsername(user.getUsername())).willReturn(true);
+        given(repo.findByUsername(user.getUsername())).willReturn(Optional.of(user));
         assertThat(service.saveIfNotExists(user)).isFalse();
         verifyNoMoreInteractions(lockRepo);
         verify(repo, never()).save(user);
@@ -80,7 +80,7 @@ public class TrustUserServiceTest {
 
     @Test
     public void shouldReturnTrueIfUserDoesNotExists() {
-        given(repo.existsByUsername(user.getUsername())).willReturn(false);
+        given(repo.findByUsername(user.getUsername())).willReturn(Optional.empty());
         given(lockRepo.saveIfNotExist(any(UserLock.class))).willReturn(true);
         assertThat(service.saveIfNotExists(user)).isTrue();
         verify(repo).save(user);

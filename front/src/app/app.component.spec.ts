@@ -6,7 +6,7 @@ import {MenuComponent} from "./menu/menu.component";
 import {HttpClientModule} from "@angular/common/http";
 import {AppRoutingModule, routes} from "./app-routing.module";
 import {BrowserModule} from "@angular/platform-browser";
-import {FormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {RouterTestingModule} from "@angular/router/testing";
 import {AlertService} from "./_services/alert.service";
 import {UserService} from "./_services/user.service";
@@ -14,6 +14,7 @@ import {Subject} from "rxjs/internal/Subject";
 import {LoginComponent} from "./login/login.component";
 import {TokenService} from "./_services/token.service";
 import {SocialLoginComponent} from "./social-login/social-login.component";
+import {ApplicationListComponent} from "./application-list/application-list.component";
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
@@ -23,7 +24,8 @@ describe('AppComponent', () => {
         FormsModule,
         AppRoutingModule,
         HttpClientModule,
-        RouterTestingModule
+        RouterTestingModule,
+        ReactiveFormsModule
       ],
       declarations: [
         AppComponent,
@@ -31,7 +33,8 @@ describe('AppComponent', () => {
         AlertComponent,
         MenuComponent,
         LoginComponent,
-        SocialLoginComponent
+        SocialLoginComponent,
+        ApplicationListComponent
       ],
       providers:[
         AlertService,

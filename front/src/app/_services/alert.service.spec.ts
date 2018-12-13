@@ -1,16 +1,16 @@
-import { TestBed, inject } from '@angular/core/testing';
+import {TestBed, inject} from '@angular/core/testing';
 
-import { AlertService } from './alert.service';
+import {AlertService} from './alert.service';
 import {Router} from "@angular/router";
 import {Subject} from "rxjs/internal/Subject";
 import {RouterTestingModule} from "@angular/router/testing";
+import {of} from "rxjs/internal/observable/of";
 
 describe('Alert Service', () => {
 
   let alertService: AlertService;
   let router: Router;
   let subjectSpy: any;
-  let testSub: Subject<any>;
   const msg: string = 'testMessage';
 
   beforeEach(() => {
@@ -24,7 +24,7 @@ describe('Alert Service', () => {
       ]
     });
     router = TestBed.get(Router);
-    subjectSpy = jasmine.createSpyObj('Subject', ['next']);
+    subjectSpy = jasmine.createSpyObj('Subject', {'next': null,'asObservable':of(msg)});
     alertService = new AlertService(router, subjectSpy);
   });
 
@@ -41,9 +41,8 @@ describe('Alert Service', () => {
   });
 
   it('#getMessage should return expected message', () => {
-    let testAlertService = new AlertService(router, new Subject())
-    testAlertService.error(msg);
-    testAlertService.getMessage().subscribe(message => {
+    alertService.error(msg);
+    alertService.getMessage().subscribe(message => {
       expect(message).toEqual(msg);
     });
   });

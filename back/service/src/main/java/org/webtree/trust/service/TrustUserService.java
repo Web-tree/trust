@@ -33,7 +33,7 @@ public class TrustUserService implements UserDetailsService {
     }
 
     public boolean existsByUsername(String name) {
-        return repository.existsByUsername(name);
+        return repository.findByUsername(name).isPresent();
     }
 
     public boolean saveIfNotExists(TrustUser user) {

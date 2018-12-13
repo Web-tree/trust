@@ -32,7 +32,6 @@
         <dependency>
             <groupId>org.cassandraunit</groupId>
             <artifactId>cassandra-unit</artifactId>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 

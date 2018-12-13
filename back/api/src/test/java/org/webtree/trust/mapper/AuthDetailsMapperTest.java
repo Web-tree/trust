@@ -9,7 +9,6 @@ import org.webtree.trust.domain.AuthDetails;
 import org.webtree.trust.domain.TrustUser;
 import org.webtree.trust.util.ObjectBuilderHelper;
 
-
 public class AuthDetailsMapperTest extends AbstractModelMapperTest {
 
     @Autowired

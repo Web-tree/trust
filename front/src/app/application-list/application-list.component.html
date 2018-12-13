@@ -1,0 +1,43 @@
+<form [formGroup]="applicationForm" (ngSubmit)="add()">
+  <div class="form-group">
+    <label for="appNameInput">Add new application</label>
+    <input type="text" formControlName="name" class="form-control" id="appNameInput" aria-describedby="emailHelp"
+           placeholder="Enter application name">
+  </div>
+  <button type="submit" class="btn btn-primary">Add</button>
+</form>
+
+<div *ngIf="showNewApp">
+  <ul class="list-group">
+    <li class="list-group-item">Application name: {{newApp.application.name}}</li>
+    <li class="list-group-item">Secret: {{newApp.secret}}</li>
+  </ul>
+  <p>Be aware, the secret is shown only once.</p>
+  <button type="button" class="btn btn-outline-success" (click)="closeNewAppInfo()">Close</button>
+</div>
+
+<div *ngIf="!showNewApp">
+  <p>My application</p>
+  <ul class="list-group" *ngFor="let application of applications">
+    <li class="list-group-item disabled" style="border: black 10px">{{application.name}}
+      <button type="button" class="btn btn-danger right-float" (click)="delete(application.id)">Delete</button>
+      <button type="button" class="btn btn-info right-float" (click)="resetSecret(application.id)">Reset secret</button>
+      <button type="button" class="btn btn-primary right-float" (click)="openChangeNameInputFor(application.id)">Change
+        Name
+      </button>
+    </li>
+    <form *ngIf="application.id == newNameFormAppId" [formGroup]="newNameForm"
+          (ngSubmit)="changeName(application.id)">
+      <div class="form-group">
+        <label for="newNameInput">Change application name</label>
+        <input type="text" formControlName="newName" class="form-control" id="newNameInput" aria-describedby=""
+               placeholder="Enter new application name">
+      </div>
+      <button type="submit" class="btn btn-primary">Change name</button>
+    </form>
+    <span *ngIf="newSecret && application.id == newSecretInfoAppId" class="badge badge-success">{{newSecret}}
+      <button type="button" class="btn btn-outline-success" style="float: right"
+              (click)="closeNewSecretInfo()">Close</button>
+    </span>
+  </ul>
+</div>

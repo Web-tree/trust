@@ -3,8 +3,8 @@ package org.webtree.trust.repository;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.assertj.core.api.Assertions;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.webtree.trust.AbstractCassandraTest;
 import org.webtree.trust.data.repository.social.facebook.FacebookRepository;
@@ -12,26 +12,27 @@ import org.webtree.trust.domain.FacebookUser;
 
 import java.util.Optional;
 
-public class FacebookRepositoryTest extends AbstractCassandraTest {
+class FacebookRepositoryTest extends AbstractCassandraTest {
 
     @Autowired
     private FacebookRepository facebookRepository;
     private FacebookUser facebookUser;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         facebookUser = FacebookUser.builder().id("randomId").firstName("aliBaba").trustUserId("qwerty").build();
     }
 
     @Test
-    public void shouldSaveAndFetchUser() {
+    void shouldSaveAndFetchUser() {
         facebookRepository.save(facebookUser);
+        //noinspection OptionalGetWithoutIsPresent
         FacebookUser user = facebookRepository.findById(facebookUser.getId()).get();
         assertThat(facebookUser).isEqualTo(user);
     }
 
     @Test
-    public void shouldSaveAndReturnTrueIfUserDoesNotExist() {
+    void shouldSaveAndReturnTrueIfUserDoesNotExist() {
         boolean isSaved = facebookRepository.saveIfNotExists(facebookUser);
         assertThat(isSaved).isTrue();
         Optional<FacebookUser> foundUser = facebookRepository.findById(facebookUser.getId());
@@ -39,7 +40,7 @@ public class FacebookRepositoryTest extends AbstractCassandraTest {
     }
 
     @Test
-    public void shouldReturnFalseIfUserExists() {
+    void shouldReturnFalseIfUserExists() {
         facebookRepository.save(facebookUser);
         boolean isSaved = facebookRepository.saveIfNotExists(facebookUser);
         assertThat(isSaved).isFalse();
@@ -48,12 +49,13 @@ public class FacebookRepositoryTest extends AbstractCassandraTest {
     }
 
     @Test
-    public void shouldNotUpdateUserWhenSavingIfExists() {
+    void shouldNotUpdateUserWhenSavingIfExists() {
         String originalFirstName = facebookUser.getFirstName();
         facebookRepository.save(facebookUser);
         facebookUser.setFirstName("monkey");
         facebookRepository.saveIfNotExists(facebookUser);
         Optional<FacebookUser> foundUser = facebookRepository.findById(facebookUser.getId());
+        //noinspection OptionalGetWithoutIsPresent
         assertThat(foundUser.get().getFirstName()).isEqualTo(originalFirstName);
     }
 }

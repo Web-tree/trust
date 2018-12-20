@@ -1,7 +1,7 @@
 package org.webtree.trust.repository;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.webtree.trust.AbstractCassandraTest;
 import org.webtree.trust.data.repository.ApplicationRepository;
@@ -20,7 +20,7 @@ import static org.junit.Assert.assertFalse;
  * Created by Udjin Skobelev on 20.11.2018.
  */
 
-public class ApplicationRepositoryTest extends AbstractCassandraTest {
+class ApplicationRepositoryTest extends AbstractCassandraTest {
     private static final String TRUST_USER_ID = "654321123456";
     private static final String APP_ID = "someAppId";
     private static final String SECRET = "someAppSecret";
@@ -31,8 +31,8 @@ public class ApplicationRepositoryTest extends AbstractCassandraTest {
 
     private Application app;
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeEach
+    void setUp() {
         app = Application.Builder.create()
             .name(NAME)
             .clientSecret(SECRET)
@@ -42,21 +42,22 @@ public class ApplicationRepositoryTest extends AbstractCassandraTest {
     }
 
     @Test
-    public void shouldSaveApplication() {
+    void shouldSaveApplication() {
         repo.save(app);
         assertThat(repo.findById(APP_ID)).isEqualTo(Optional.of(app));
     }
 
     @Test
-    public void shouldUpdateApplicationsSecret() {
+    void shouldUpdateApplicationsSecret() {
         String secret = "newSecret";
         repo.save(app);
         repo.updateSecret(APP_ID, secret);
+        //noinspection OptionalGetWithoutIsPresent
         assertThat(repo.findById(APP_ID).get().getSecret()).isEqualTo(secret);
     }
 
     @Test
-    public void shouldReturnListOfApplications() {
+    void shouldReturnListOfApplications() {
         List<Application> list = buildApplications();
         repo.saveAll(list);
 
@@ -67,7 +68,7 @@ public class ApplicationRepositoryTest extends AbstractCassandraTest {
     }
 
     @Test
-    public void shouldReturnListOfApplicationsOnlyForCurrentUser() {
+    void shouldReturnListOfApplicationsOnlyForCurrentUser() {
         Application anotherApp = Application.Builder.create()
             .id("543")
             .trustUserId("anotherID")
@@ -82,17 +83,18 @@ public class ApplicationRepositoryTest extends AbstractCassandraTest {
     }
 
     @Test
-    public void shouldDeleteApp() {
+    void shouldDeleteApp() {
         repo.save(app);
         repo.deleteById(app.getId());
         assertThat(repo.findById(app.getId()).isPresent()).isFalse();
     }
 
     @Test
-    public void shouldUpdateNameOfApp() {
+    void shouldUpdateNameOfApp() {
         String newName = "asdfghjkl";
         repo.save(app);
         repo.updateName(app.getId(), newName);
+        //noinspection OptionalGetWithoutIsPresent
         assertThat(repo.findById(app.getId()).get().getName()).isEqualTo(newName);
     }
 

@@ -1,6 +1,5 @@
 package org.webtree.trust.controller;
 
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -8,11 +7,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import org.junit.Before;
-import org.junit.Test;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.MessageSource;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithAnonymousUser;
@@ -21,7 +20,6 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.webtree.trust.domain.AuthDetails;
 import org.webtree.trust.domain.TrustUser;
-import org.webtree.trust.service.TrustUserService;
 import org.webtree.trust.service.security.JwtTokenService;
 
 import java.util.Locale;
@@ -40,6 +38,7 @@ public class SecurityControllerTest extends AbstractControllerTest {
                     "c1d2c1d2c1d2c1d2c1d2c1d2c1d2c1d2" +
                     "c1d2c1d2c1d2c1d2c1d2c1d2c1d2c1d2" +
                     "c1d2c1d2c1d2c1d2c1d2c1d2c1d2c1d2";
+    protected ObjectMapper objectMapper;
 
     @Autowired
     private MockMvc mockMvc;
@@ -54,15 +53,15 @@ public class SecurityControllerTest extends AbstractControllerTest {
     private JwtTokenService tokenUtil;
     private AuthDetails authDetails;
 
-    @Override
-    @Before
+    @BeforeEach
     public void setUp() {
-        super.setUp();
+        objectMapper = new ObjectMapper();
+
         authDetails = AuthDetails.builder().username(TEST_USERNAME).password(PASSWORD).build();
     }
 
     @Test
-    public void whenLoginWithCorrectUser_shouldReturnValidToken() throws Exception {
+    void whenLoginWithCorrectUser_shouldReturnValidToken() throws Exception {
         //TrustUser that is stored in DB with already encoded password
         TrustUser trustUser = getUserFromUserDTO(authDetails);
 
@@ -81,13 +80,13 @@ public class SecurityControllerTest extends AbstractControllerTest {
 
     @Test
     @WithAnonymousUser
-    public void whenRefreshWithInvalidToken_shouldReturnError() throws Exception {
+    void whenRefreshWithInvalidToken_shouldReturnError() throws Exception {
         mockMvc.perform(get("/rest/token/refresh"))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
-    public void whenLoginWithIncorrectUsername_shouldReturnErrorMessage() throws Exception {
+    void whenLoginWithIncorrectUsername_shouldReturnErrorMessage() throws Exception {
         given(trustUserService.loadUserByUsername(authDetails.getUsername())).willReturn(null);
         ResultActions actions = mockMvc.perform(
                 post("/rest/token/new")
@@ -99,7 +98,7 @@ public class SecurityControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    public void whenLoginWithNotSha512Password_shouldReturnErrorMessage() throws Exception {
+    void whenLoginWithNotSha512Password_shouldReturnErrorMessage() throws Exception {
         AuthDetails wrongPasswordUser = AuthDetails.builder().username(TEST_USERNAME).password("12345").build();
 
         mockMvc.perform(
@@ -110,7 +109,7 @@ public class SecurityControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    public void whenLoginWithWrongPassword_shouldReturnErrorMessage() throws Exception {
+    void whenLoginWithWrongPassword_shouldReturnErrorMessage() throws Exception {
         AuthDetails wrongPasswordUser = AuthDetails.builder().username(TEST_USERNAME).password(WRONG_PASSWORD).build();
 
         given(trustUserService.loadUserByUsername(TEST_USERNAME)).willReturn(getUserFromUserDTO(authDetails));
@@ -126,7 +125,7 @@ public class SecurityControllerTest extends AbstractControllerTest {
 
     @WithAnonymousUser
     @Test
-    public void whenDoingRequestsWithValidTokenItShouldWork() throws Exception {
+    void whenDoingRequestsWithValidTokenItShouldWork() throws Exception {
         TrustUser trustUserWithEncodedPassword = getUserFromUserDTO(authDetails);
 
         given(trustUserService.loadUserByUsername(authDetails.getUsername())).willReturn(trustUserWithEncodedPassword);

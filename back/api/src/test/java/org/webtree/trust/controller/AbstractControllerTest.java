@@ -1,7 +1,5 @@
 package org.webtree.trust.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Before;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.cassandra.core.CassandraOperations;
@@ -25,13 +23,8 @@ public abstract class AbstractControllerTest extends AbstractSpringTest {
     @MockBean private CassandraOperations cassandraOperations;
     @MockBean private ApplicationRepository applicationRepository;
 
-    protected ObjectMapper objectMapper;
     @MockBean protected SocialServiceFacade socialService;
     @MockBean protected TrustUserService trustUserService;
     @MockBean protected FacebookService facebookService;
 
-    @Before
-    public void setUp() {
-        objectMapper = new ObjectMapper();
-    }
 }

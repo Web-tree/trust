@@ -1,5 +1,6 @@
 package org.webtree.trust.service;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -9,11 +10,15 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.access.AccessDeniedException;
 import org.webtree.trust.data.repository.TrustUserLockRepository;
 import org.webtree.trust.data.repository.TrustUserRepository;
 import org.webtree.trust.domain.TrustUser;
@@ -23,7 +28,7 @@ import org.webtree.trust.util.ObjectBuilderHelper;
 
 import java.util.Optional;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class TrustUserServiceTest {
 
     private final static String ID = "id";
@@ -42,7 +47,7 @@ public class TrustUserServiceTest {
     private ObjectBuilderHelper helper = new ObjectBuilderHelper();
     private TrustUser user;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         service = new TrustUserService(repo, lockRepo,idService);
         user = helper.buildNewUser();
@@ -95,10 +100,10 @@ public class TrustUserServiceTest {
         assertThat(user.getId()).isEqualTo(id);
     }
 
-    @Test(expected = UserAlreadyHasIdException.class)
+    @Test
     public void shouldThrowExceptionIfIdIsNotNull() {
         user.setId("someID");
-        service.createUser(user);
+        assertThatThrownBy(() -> service.createUser(user)).isInstanceOf(UserAlreadyHasIdException.class);
     }
 
     @Test

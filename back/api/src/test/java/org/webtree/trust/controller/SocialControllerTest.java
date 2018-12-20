@@ -7,8 +7,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import org.junit.Before;
-import org.junit.Test;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.MediaType;
@@ -22,10 +23,11 @@ import org.webtree.trust.service.exception.ProviderNotSupportedException;
 import java.util.Locale;
 
 @WithMockCustomUser
-public class SocialControllerTest extends AbstractControllerTest {
+class SocialControllerTest extends AbstractControllerTest {
     private static final String PROVIDER = "unrealProvider";
     private static final String TOKEN = "t1o2k3n4";
     private static final String TRUST_USER_ID = "654321";
+    private ObjectMapper objectMapper;
 
     @Autowired
     private MockMvc mockMvc;
@@ -35,17 +37,16 @@ public class SocialControllerTest extends AbstractControllerTest {
     private String providerNotSupportedErrorMessage;
     private String invalidTokenErrorMessage;
 
-    @Override
-    @Before
-    public void setUp() {
-        super.setUp();
+    @BeforeEach
+    void setUp() {
+        objectMapper = new ObjectMapper();
         info = SocialConnectionInfo.builder().provider(PROVIDER).token(TOKEN).build();
         providerNotSupportedErrorMessage = messageSource.getMessage("social.provider.notSupported", null, Locale.getDefault());
         invalidTokenErrorMessage = messageSource.getMessage("social.invalidToken", null, Locale.getDefault());
     }
 
     @Test
-    public void shouldReturn4xxIfProviderNotSupported() throws Exception {
+    void shouldReturn4xxIfProviderNotSupported() throws Exception {
         doThrow(ProviderNotSupportedException.class).when(socialService).addSocialConnection(info, TRUST_USER_ID);
         mockMvc
                 .perform(post("/rest/social/add")
@@ -55,7 +56,7 @@ public class SocialControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    public void shouldReturn4xxIfTokenIsInvalid() throws Exception {
+    void shouldReturn4xxIfTokenIsInvalid() throws Exception {
         doThrow(InvalidAuthorizationException.class).when(socialService).addSocialConnection(info, TRUST_USER_ID);
         mockMvc
                 .perform(post("/rest/social/add")
@@ -65,7 +66,7 @@ public class SocialControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    public void shouldReturn200CodeIfProviderExists() throws Exception {
+    void shouldReturn200CodeIfProviderExists() throws Exception {
         doNothing().when(socialService).addSocialConnection(info, TRUST_USER_ID);
         mockMvc
                 .perform(post("/rest/social/add")
@@ -75,7 +76,7 @@ public class SocialControllerTest extends AbstractControllerTest {
 
     @WithAnonymousUser
     @Test
-    public void shouldReturnToken() throws Exception {
+    void shouldReturnToken() throws Exception {
         given(socialService.login(info)).willReturn(TOKEN);
 
         mockMvc
@@ -88,7 +89,7 @@ public class SocialControllerTest extends AbstractControllerTest {
 
     @WithAnonymousUser
     @Test
-    public void shouldReturnBadRequestWhenTokenIsNull() throws Exception {
+    void shouldReturnBadRequestWhenTokenIsNull() throws Exception {
         SocialConnectionInfo emptyInfo = SocialConnectionInfo.builder().token(null).provider(PROVIDER).build();
 
         mockMvc
@@ -99,7 +100,7 @@ public class SocialControllerTest extends AbstractControllerTest {
 
     @WithAnonymousUser
     @Test
-    public void shouldReturnBadRequestWhenTokenIsEmpty() throws Exception {
+    void shouldReturnBadRequestWhenTokenIsEmpty() throws Exception {
         SocialConnectionInfo emptyInfo = SocialConnectionInfo.builder().token("").provider(PROVIDER).build();
 
         mockMvc
@@ -110,7 +111,7 @@ public class SocialControllerTest extends AbstractControllerTest {
 
     @WithAnonymousUser
     @Test
-    public void shouldReturnBadRequestWhenProviderIsNull() throws Exception {
+    void shouldReturnBadRequestWhenProviderIsNull() throws Exception {
         SocialConnectionInfo emptyInfo = SocialConnectionInfo.builder().token(TOKEN).provider(null).build();
 
         mockMvc
@@ -121,7 +122,7 @@ public class SocialControllerTest extends AbstractControllerTest {
 
     @WithAnonymousUser
     @Test
-    public void shouldReturnBadRequestWhenProviderIsEmpty() throws Exception {
+    void shouldReturnBadRequestWhenProviderIsEmpty() throws Exception {
         SocialConnectionInfo emptyInfo = SocialConnectionInfo.builder().token(TOKEN).provider("").build();
 
         mockMvc
@@ -132,7 +133,7 @@ public class SocialControllerTest extends AbstractControllerTest {
 
     @WithAnonymousUser
     @Test
-    public void shouldReturnBadRequestIfProverNotSupported() throws Exception {
+    void shouldReturnBadRequestIfProverNotSupported() throws Exception {
         doThrow(ProviderNotSupportedException.class).when(socialService).login(info);
 
         mockMvc
@@ -144,7 +145,7 @@ public class SocialControllerTest extends AbstractControllerTest {
 
     @WithAnonymousUser
     @Test
-    public void shouldReturnBadRequestIfTokenIsInvalid() throws Exception {
+    void shouldReturnBadRequestIfTokenIsInvalid() throws Exception {
         doThrow(InvalidAuthorizationException.class).when(socialService).login(info);
 
         mockMvc

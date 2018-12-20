@@ -4,8 +4,8 @@ package org.webtree.trust.repository;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.assertj.core.api.Assertions;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.webtree.trust.AbstractCassandraTest;
 import org.webtree.trust.data.repository.TrustUserRepository;
@@ -15,7 +15,7 @@ import org.webtree.trust.util.ObjectBuilderHelper;
 import java.util.Optional;
 
 
-public class TrustUserRepositoryTest extends AbstractCassandraTest {
+class TrustUserRepositoryTest extends AbstractCassandraTest {
 
     @Autowired
     private TrustUserRepository repo;
@@ -24,20 +24,21 @@ public class TrustUserRepositoryTest extends AbstractCassandraTest {
 
     private TrustUser user;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         user = helper.buildNewUserWithId();
     }
 
     @Test
-    public void shouldSaveAndFetchUser() {
+    void shouldSaveAndFetchUser() {
         repo.save(user);
         Optional<TrustUser> trustUser = repo.findById(user.getId());
+        //noinspection OptionalGetWithoutIsPresent
         assertThat(user).isEqualTo(trustUser.get());
     }
 
     @Test
-    public void whenDeleteUserItShouldBeDeleted() {
+    void whenDeleteUserItShouldBeDeleted() {
         TrustUser savedUser = repo.save(user);
         assertThat(repo.findByUsername(savedUser.getUsername()).isPresent()).isTrue();
         repo.delete(user);
@@ -45,34 +46,34 @@ public class TrustUserRepositoryTest extends AbstractCassandraTest {
     }
 
     @Test
-    public void shouldFindUserByUserName() {
+    void shouldFindUserByUserName() {
         TrustUser savedUser = repo.save(user);
         Optional<TrustUser> foundUser = repo.findByUsername(savedUser.getUsername());
         Assertions.assertThat(foundUser).isEqualTo(Optional.of(savedUser));
     }
 
     @Test
-    public void shouldFindUserById() {
+    void shouldFindUserById() {
         TrustUser savedUser = repo.save(user);
         Optional<TrustUser> foundUser = repo.findById(savedUser.getId());
         Assertions.assertThat(foundUser).isEqualTo(Optional.of(savedUser));
     }
 
     @Test
-    public void shouldReturnTrueIfUserDoesNotExist() {
+    void shouldReturnTrueIfUserDoesNotExist() {
         assertThat(repo.existsById(user.getUsername())).isFalse();
         assertThat(repo.saveIfNotExists(user)).isTrue();
         }
 
     @Test
-    public void shouldReturnFalseIfUserExists() {
+    void shouldReturnFalseIfUserExists() {
         TrustUser savedUser = repo.save(user);
         assertThat(repo.existsById(savedUser.getId())).isTrue();
         assertThat(repo.saveIfNotExists(savedUser)).isFalse();
         }
 
     @Test
-    public void shouldNotUpdateWhenInsertUserWithTheSamePrimaryKey() {
+    void shouldNotUpdateWhenInsertUserWithTheSamePrimaryKey() {
         TrustUser savedUser = repo.save(user);
         assertThat(repo.existsById(savedUser.getId())).isTrue();
         boolean isSaved = repo.saveIfNotExists(TrustUser.builder().id(user.getId()).username("someNewUsername").build());

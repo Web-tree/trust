@@ -1,14 +1,15 @@
 package org.webtree.trust.service.social;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.webtree.trust.domain.SocialConnectionInfo;
 import org.webtree.trust.domain.TrustUser;
 import org.webtree.trust.service.exception.ProviderNotSupportedException;
@@ -18,8 +19,8 @@ import org.webtree.trust.util.ObjectBuilderHelper;
 /**
  * Created by Udjin on 06.08.2018.
  */
-@RunWith(MockitoJUnitRunner.class)
-public class SocialServiceFacadeTest {
+@ExtendWith(MockitoExtension.class)
+class SocialServiceFacadeTest {
 
     private final static String TRUST_USER_ID = "id";
     private final static String PROVIDER_ID = "provider_id";
@@ -37,8 +38,8 @@ public class SocialServiceFacadeTest {
     private SocialConnectionInfo info;
     private ObjectBuilderHelper helper = new ObjectBuilderHelper();
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         service = new SocialServiceFacade(provider, jwtTokenService);
         info = SocialConnectionInfo.builder().token("321").provider(PROVIDER_ID).build();
         trustUserWithId = helper.buildNewUserWithId();
@@ -47,19 +48,21 @@ public class SocialServiceFacadeTest {
 
 
     @Test
-    public void shouldCallSocialUserServiceIfProviderSupported() {
+    void shouldCallSocialUserServiceIfProviderSupported() {
         service.addSocialConnection(info, TRUST_USER_ID);
         verify(facebookService).addSocialConnection(info, TRUST_USER_ID);
     }
 
-    @Test(expected = ProviderNotSupportedException.class)
-    public void shouldNotCallSocialUserServiceIfProviderNotSupported() {
+    @Test
+    void shouldNotCallSocialUserServiceIfProviderNotSupported() {
         given(provider.getService(PROVIDER_ID)).willThrow(new ProviderNotSupportedException(""));
-        service.addSocialConnection(info, TRUST_USER_ID);
+
+        assertThatThrownBy(() -> service.addSocialConnection(info, TRUST_USER_ID))
+                .isInstanceOf(ProviderNotSupportedException.class);
     }
 
     @Test
-    public void shouldReturnTrustUserFromDBIfItExists() {
+    void shouldReturnTrustUserFromDBIfItExists() {
         given(facebookService.login(info)).willReturn(trustUserWithId);
         given(jwtTokenService.generateToken(trustUserWithId)).willReturn(TOKEN);
         assertThat(service.login(info)).isEqualTo(TOKEN);

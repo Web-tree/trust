@@ -2,14 +2,14 @@ package org.webtree.trust.mapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.webtree.trust.domain.AuthDetails;
 import org.webtree.trust.domain.TrustUser;
 import org.webtree.trust.util.ObjectBuilderHelper;
 
-public class AuthDetailsMapperTest extends AbstractModelMapperTest {
+class AuthDetailsMapperTest extends AbstractModelMapperTest {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -17,7 +17,7 @@ public class AuthDetailsMapperTest extends AbstractModelMapperTest {
     private ObjectBuilderHelper builderHelper = new ObjectBuilderHelper();
 
     @Test
-    public void checkUserMapping() {
+    void checkUserMapping() {
         AuthDetails authDetails = builderHelper.buildAuthDetails();
         String password = authDetails.getPassword();
         TrustUser trustUser = modelMapper.map(authDetails, TrustUser.class);

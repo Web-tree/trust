@@ -11,10 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertFalse;
-
 
 /**
  * Created by Udjin Skobelev on 20.11.2018.
@@ -79,7 +76,7 @@ class ApplicationRepositoryTest extends AbstractCassandraTest {
 
         List<Application> appList = repo.findAllByTrustUserId(TRUST_USER_ID);
         assertThat(appList.size()).isEqualTo(3);
-        assertFalse(appList.stream().anyMatch(app -> app.getId().equals("543")));
+        assertThat(appList.stream().anyMatch(app -> app.getId().equals("543"))).isFalse();
     }
 
     @Test

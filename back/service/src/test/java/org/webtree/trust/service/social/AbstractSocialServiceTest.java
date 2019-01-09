@@ -7,11 +7,9 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
-import org.junit.Rule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.rules.ExpectedException;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.webtree.trust.data.repository.social.SocialRepository;
@@ -51,9 +49,6 @@ public class AbstractSocialServiceTest {
     private SocialUser userFromDB;
     private SocialConnectionInfo info;
     private TrustUser trustUser;
-
-    @Rule
-    public ExpectedException exception = ExpectedException.none();
 
     @BeforeEach
     void setUp() {

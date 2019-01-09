@@ -1,21 +1,18 @@
 package org.webtree.trust.service;
 
-import org.junit.Before;
-import org.junit.Ignore;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.access.AccessDeniedException;
-import org.webtree.trust.domain.Application;
 import org.webtree.trust.domain.TrustUser;
 import org.webtree.trust.service.security.ApplicationServicePreAuthorization;
 import org.webtree.trust.service.security.WithMockCustomUser;
-
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
 
 /**
  * Created by Udjin Skobelev on 05.12.2018.
@@ -31,13 +28,11 @@ class ApplicationServiceSecurityTest extends AbstractSpringTest {
 
     @Autowired
     private ApplicationService service;
-    private Application application;
     private TrustUser trustUser;
     private TrustUser anotherUser;
 
     @BeforeEach
     void setUp() {
-        application = Application.Builder.create().trustUserId(TRUST_USER_ID).id(APP_ID).build();
         trustUser = TrustUser.builder().id(TRUST_USER_ID).username("user1").build();
         anotherUser = TrustUser.builder().id(ANOTHER_TRUST_USER_ID).username("user1").build();
     }

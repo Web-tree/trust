@@ -1,19 +1,15 @@
 package org.webtree.trust.service;
 
-import org.junit.Before;
-import org.junit.jupiter.api.BeforeAll;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.webtree.trust.domain.Application;
 import org.webtree.trust.service.security.CombinedPasswordEncoder;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.given;
 
 
 /**

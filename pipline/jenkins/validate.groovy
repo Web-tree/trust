@@ -5,11 +5,13 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: "${env.CHANGE_BRANCH}", credentialsId: 'github-app', url: 'https://github.com/Web-tree/trust.git'
+                script {
+                    def branch = env.CHANGE_BRANCH ? env.CHANGE_BRANCH : env.GIT_BRANCH
+                    git branch: "${branch}", credentialsId: 'github-app', url: 'https://github.com/Web-tree/trust.git'
+                }
             }
         }
         stage('PR verify') {
-
             parallel {
                 stage('Verify back') {
                     agent {

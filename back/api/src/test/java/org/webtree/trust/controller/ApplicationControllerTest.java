@@ -1,13 +1,23 @@
 package org.webtree.trust.controller;
 
-import org.junit.Before;
-import org.junit.Test;
+import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.webtree.trust.domain.Application;
 import org.webtree.trust.dto.JustCreatedApplication;
 import org.webtree.trust.security.WithMockCustomUser;
@@ -16,20 +26,12 @@ import org.webtree.trust.service.ApplicationService;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.hamcrest.Matchers.hasSize;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.verify;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 /**
  * Created by Udjin Skobelev on 02.11.2018.
  */
 
 @WithMockCustomUser
-public class ApplicationControllerTest extends AbstractControllerTest {
+class ApplicationControllerTest extends AbstractControllerTest {
     private static final String TRUST_USER_ID = "654321";
     private static final String APP_NAME = "someName";
     private static final String APP_ID = "someId";
@@ -42,10 +44,8 @@ public class ApplicationControllerTest extends AbstractControllerTest {
     private JustCreatedApplication wrapper;
     private Application app;
 
-    @Override
-    @Before
-    public void setUp() {
-        super.setUp();
+    @BeforeEach
+    void setUp() {
         app = Application.Builder
             .create()
             .name(APP_NAME)
@@ -56,7 +56,7 @@ public class ApplicationControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    public void shouldReturnListOfApplications() throws Exception {
+    void shouldReturnListOfApplications() throws Exception {
         List<Application> list = buildApplications();
         given(service.findAllByTrustUserId(TRUST_USER_ID)).willReturn(list);
         mockMvc
@@ -79,7 +79,7 @@ public class ApplicationControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    public void shouldCreateApp() throws Exception {
+    void shouldCreateApp() throws Exception {
         given((service.create(APP_NAME, TRUST_USER_ID))).willReturn(wrapper);
         given(service.save(app)).willReturn(app);
         mockMvc
@@ -92,7 +92,7 @@ public class ApplicationControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    public void shouldReturnNewSecret() throws Exception {
+    void shouldReturnNewSecret() throws Exception {
 
         given(service.resetSecretTo(APP_ID)).willReturn(SECRET);
 
@@ -105,7 +105,7 @@ public class ApplicationControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    public void shouldUpdateApplicationName() throws Exception {
+    void shouldUpdateApplicationName() throws Exception {
         String newName = "zxcvbnjhgfdsa";
 
         mockMvc
@@ -117,7 +117,7 @@ public class ApplicationControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    public void shouldDeleteApplication() throws Exception {
+    void shouldDeleteApplication() throws Exception {
         mockMvc
             .perform(delete("/rest/app").param("id", APP_ID)
                 .contentType(MediaType.APPLICATION_JSON))
@@ -127,7 +127,7 @@ public class ApplicationControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    public void shouldReturnForbiddenIfWrongCredentialsPassed() throws Exception {
+    void shouldReturnForbiddenIfWrongCredentialsPassed() throws Exception {
         doThrow(AccessDeniedException.class).when(service).delete(APP_ID);
         mockMvc
             .perform(delete("/rest/app").param("id", APP_ID)

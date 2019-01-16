@@ -1,33 +1,33 @@
 package org.webtree.trust.service;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.webtree.trust.domain.Application;
-import org.webtree.trust.service.security.CombinedPasswordEncoder;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.webtree.trust.domain.Application;
+import org.webtree.trust.service.security.CombinedPasswordEncoder;
 
 
 /**
  * Created by Udjin Skobelev on 04.12.2018.
  */
-@RunWith(MockitoJUnitRunner.class)
-public class ApplicationFactoryTest {
+@ExtendWith(MockitoExtension.class)
+class ApplicationFactoryTest {
     @Mock private IdService idService;
     @Mock private CombinedPasswordEncoder encoder;
     private ApplicationFactory factory;
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeEach
+    void setUp() {
         factory = new ApplicationFactory(idService, encoder);
     }
 
     @Test
-    public void shouldCreateApp() {
+    void shouldCreateApp() {
         String id = "qwerty";
         String name = "star";
         String secret = "BigSecret";

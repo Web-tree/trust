@@ -1,15 +1,15 @@
 package org.webtree.trust.service.social;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Answers;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 import org.webtree.social.stackexchange.api.impl.StackExchangeTemplate;
 import org.webtree.social.stackexchange.domain.NetworkUser;
@@ -18,12 +18,12 @@ import org.webtree.social.stackexchange.domain.User;
 import org.webtree.trust.domain.StackExchangeUser;
 import org.webtree.trust.service.social.api.StackExchangeApi;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
-@RunWith(MockitoJUnitRunner.class)
-public class StackExchangeApiTest {
+@ExtendWith(MockitoExtension.class)
+class StackExchangeApiTest {
     private final static String SITE_API_PARAMETR = "stackoverflow";
     private final static String SITE_URL = "stack";
     private final static Integer ACCOUNT_ID = 556677;
@@ -43,15 +43,15 @@ public class StackExchangeApiTest {
     private List<Site> sites;
     private List<NetworkUser> networkUsers;
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeEach
+    void setUp() {
         api = new StackExchangeApi(factory, modelMapper);
         initNetworkUsers();
         initSites();
     }
 
     @Test
-    public void shouldReturnUser() {
+    void shouldReturnUser() {
         String token = "abcdefg12345";
         User u = new User(ACCOUNT_ID, USER_ID, DISPLAY_NAME);
         StackExchangeUser mockUser = buildStackExchangeUser();

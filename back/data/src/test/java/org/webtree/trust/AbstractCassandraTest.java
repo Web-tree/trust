@@ -1,23 +1,14 @@
 package org.webtree.trust;
 
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.webtree.trust.data.boot.config.CassandraConfig;
-import org.webtree.trust.rule.CassandraTestRule;
-import org.webtree.trust.rule.ClearDBRule;
+import org.webtree.trust.extension.EmbededCassandraExtension;
 
-@RunWith(SpringRunner.class)
+@ExtendWith({SpringExtension.class, EmbededCassandraExtension.class})
 @SpringBootTest(classes = CassandraConfig.class)
 @ActiveProfiles("cassandra-test")
 public abstract class AbstractCassandraTest {
-
-    @ClassRule
-    public static CassandraTestRule cassandraTestRule = new CassandraTestRule();
-    @Rule
-    public ClearDBRule clearDBRule = new ClearDBRule();
 }
-

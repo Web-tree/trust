@@ -4,7 +4,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -12,13 +12,13 @@ import org.webtree.trust.provider.Provider;
 import org.webtree.trust.security.WithMockCustomUser;
 
 @WithMockCustomUser
-public class TrustControllerTest extends AbstractControllerTest {
+class TrustControllerTest extends AbstractControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @Test
-    public void shouldReturnExpectedValueOfTrust() throws Exception {
+    void shouldReturnExpectedValueOfTrust() throws Exception {
         String userId = "someid";
         Float trustValue = 0.5F;
 
@@ -31,7 +31,7 @@ public class TrustControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    public void shouldReturn4xxIfIncorrectProviderPasses() throws Exception {
+    void shouldReturn4xxIfIncorrectProviderPasses() throws Exception {
         String provider = "someRandomProvider";
         String userId = "someUUID";
         String errorMsg = "No such provider: ";
@@ -45,7 +45,7 @@ public class TrustControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    public void shouldReturn4xxIfOneOrTwoParameterIsMissed() throws Exception {
+    void shouldReturn4xxIfOneOrTwoParameterIsMissed() throws Exception {
         String provider = "someRandomProvider";
         String userId = "someUUID";
 

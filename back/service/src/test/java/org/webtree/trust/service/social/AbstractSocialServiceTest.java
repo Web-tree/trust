@@ -1,18 +1,17 @@
 package org.webtree.trust.service.social;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.webtree.trust.data.repository.social.SocialRepository;
 import org.webtree.trust.domain.SocialConnectionInfo;
 import org.webtree.trust.domain.SocialUser;
@@ -29,7 +28,7 @@ import java.util.Optional;
 /**
  * Created by Udjin Skobelev on 09.09.2018.
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class AbstractSocialServiceTest {
 
     private final static String TRUST_USER_ID = "54321";
@@ -51,11 +50,8 @@ public class AbstractSocialServiceTest {
     private SocialConnectionInfo info;
     private TrustUser trustUser;
 
-    @Rule
-    public ExpectedException exception = ExpectedException.none();
-
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         service = new AbstractSocialService(idService, trustUserService) {
             @Override
             SocialRepository getRepository() {
@@ -81,14 +77,14 @@ public class AbstractSocialServiceTest {
     }
 
     @Test
-    public void shouldGetTrustUserIdFromSocialUserIfExistsAndFindTrustUserByIt() {
+    void shouldGetTrustUserIdFromSocialUserIfExistsAndFindTrustUserByIt() {
         given(repo.findById(userFromApi.getId())).willReturn(Optional.of(userFromDB));
         given(trustUserService.findById(userFromDB.getTrustUserId())).willReturn(Optional.of(trustUser));
         assertThat(service.login(info)).isEqualTo(trustUser);
     }
 
     @Test
-    public void shouldReturnTrustUserFromDBIfSocialUserDoNotHaveTrustUserId() {
+    void shouldReturnTrustUserFromDBIfSocialUserDoNotHaveTrustUserId() {
         String generatedId = "someRandomLongId";
         SocialUser userFromDbWithoutTrustUserId = socialUserBuilder(null);
         given(repo.findById(userFromApi.getId())).willReturn(Optional.of(userFromDbWithoutTrustUserId));
@@ -100,7 +96,7 @@ public class AbstractSocialServiceTest {
 
 
     @Test
-    public void shouldMadeTrustUserOfSocialUserAndReturn() {
+    void shouldMadeTrustUserOfSocialUserAndReturn() {
         given(repo.findById(userFromApi.getId())).willReturn(Optional.of(userFromDB));
         given(trustUserService.findById(userFromDB.getTrustUserId())).willReturn(Optional.empty());
         given(trustUserService.saveIfNotExists(any())).willReturn(true);
@@ -110,7 +106,7 @@ public class AbstractSocialServiceTest {
     }
 
     @Test
-    public void shouldAppendNumberToTrustUserUsernameIfUsernameIsBoundedAndSave() {
+    void shouldAppendNumberToTrustUserUsernameIfUsernameIsBoundedAndSave() {
         given(repo.findById(userFromApi.getId())).willReturn(Optional.of(userFromDB));
         given(trustUserService.findById(TRUST_USER_ID)).willReturn(Optional.empty());
         given(trustUserService.saveIfNotExists(any(TrustUser.class))).willReturn(false, true);
@@ -120,7 +116,7 @@ public class AbstractSocialServiceTest {
     }
 
     @Test
-    public void shouldAppendNumberAndIterateItUntilTrustUserCanBeSaved() {
+    void shouldAppendNumberAndIterateItUntilTrustUserCanBeSaved() {
         given(repo.findById(userFromApi.getId())).willReturn(Optional.of(userFromDB));
         given(trustUserService.findById(TRUST_USER_ID)).willReturn(Optional.empty());
         given(trustUserService.saveIfNotExists(any(TrustUser.class))).willReturn(false, false, true);
@@ -130,30 +126,30 @@ public class AbstractSocialServiceTest {
     }
 
     @Test
-    public void throwExceptionIfFBUserAlreadyLinkedWithOtherAccount() {
+    void throwExceptionIfFBUserAlreadyLinkedWithOtherAccount() {
         given(repo.saveIfNotExists(userFromApi)).willReturn(false);
         given(repo.findById(userFromApi.getId())).willReturn(Optional.of(userFromDB));
-        exception.expect(ProfileAlreadyLinkedWithAnotherAccountException.class);
-        service.addSocialConnection(info, "someOtherID");
+        assertThatThrownBy(() ->service.addSocialConnection(info, "someOtherID"))
+                .isInstanceOf(ProfileAlreadyLinkedWithAnotherAccountException.class);
     }
 
     @Test
-    public void throwExceptionIfFBUserAlreadyConnected() {
+    void throwExceptionIfFBUserAlreadyConnected() {
         given(repo.saveIfNotExists(userFromApi)).willReturn(false);
         given(repo.findById(userFromApi.getId())).willReturn(Optional.of(userFromDB));
-        exception.expect(ProfileAlreadyLinkedWithCurrentAccountException.class);
-        service.addSocialConnection(info, TRUST_USER_ID);
+        assertThatThrownBy(() ->service.addSocialConnection(info, TRUST_USER_ID))
+                .isInstanceOf(ProfileAlreadyLinkedWithCurrentAccountException.class);
     }
 
     @Test
-    public void shouldNotThrowExceptionIfFBUserNotExistsInDBWhenSaving() {
+    void shouldNotThrowExceptionIfFBUserNotExistsInDBWhenSaving() {
         given(repo.saveIfNotExists(userFromApi)).willReturn(true);
         service.addSocialConnection(info, TRUST_USER_ID);
         verify(repo, never()).findById(userFromApi.getId());
         }
 
     @Test
-    public void shouldSaveFBUserWithTrustUserIdIfThisFieldWasEmpty() {
+    void shouldSaveFBUserWithTrustUserIdIfThisFieldWasEmpty() {
         SocialUser userFromDbWithoutTrustUserId = socialUserBuilder(null);
         given(repo.saveIfNotExists(userFromApi)).willReturn(false);
         given(repo.findById(userFromApi.getId())).willReturn(Optional.of(userFromDbWithoutTrustUserId));
@@ -162,11 +158,12 @@ public class AbstractSocialServiceTest {
     }
 
     @Test
-    public void shouldThrowExceptionIfUserNotFound() {
+    void shouldThrowExceptionIfUserNotFound() {
         given(repo.saveIfNotExists(userFromApi)).willReturn(false);
         given(repo.findById(userFromApi.getId())).willReturn(Optional.empty());
-        exception.expect(UnexpectedSocialRepositoryResponseException.class);
-        service.addSocialConnection(info, TRUST_USER_ID);
+        assertThatThrownBy(() -> service.addSocialConnection(info, TRUST_USER_ID))
+                .isInstanceOf(UnexpectedSocialRepositoryResponseException.class);
+
     }
 
     private SocialUser socialUserBuilder(String id) {

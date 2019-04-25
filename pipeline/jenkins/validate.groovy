@@ -1,27 +1,32 @@
 pipeline {
-    agent {
-        label 'slave'
-    }
+    agent any
     stages {
-        stage('Checkout') {
-            steps {
-                script {
-                    def branch = env.CHANGE_BRANCH ? env.CHANGE_BRANCH : env.GIT_BRANCH
-                    git branch: "${branch}", credentialsId: 'github-app', url: 'https://github.com/Web-tree/trust.git'
-                }
-            }
-        }
         stage('PR verify') {
             parallel {
                 stage('Verify back') {
+                    environment {
+                        MAVEN_HOME = '/usr/share/maven'
+                    }
                     agent {
-                        docker {
-                            image 'maven:3.6.0-jdk-8-alpine'
-                            args '-v jenkins_m2:/root/.m2'
-                            reuseNode true
+                        kubernetes {
+                            label 'mystuff-validate-maven'
+                            containerTemplate {
+                                name 'maven'
+                                image 'maven:3.6.0-jdk-8-alpine'
+                                ttyEnabled true
+                                command 'cat'
+                            }
                         }
                     }
                     stages {
+                        stage('Checkout') {
+                            steps {
+                                script {
+                                    def branch = env.CHANGE_BRANCH ? env.CHANGE_BRANCH : env.GIT_BRANCH
+                                    git branch: "${branch}", credentialsId: 'github-app', url: 'https://github.com/Web-tree/trust.git'
+                                }
+                            }
+                        }
                         stage('Validate') {
                             steps {
                                 dir('back') {
@@ -34,16 +39,29 @@ pipeline {
                 }
                 stage('Verify front') {
                     agent {
-                        docker {
-                            image 'webtree/node-with-chrome'
-                            reuseNode true
+                        kubernetes {
+                            label 'mystuff-validate-node'
+                            containerTemplate {
+                                name 'node'
+                                image 'webtree/node-with-chrome'
+                                ttyEnabled true
+                                command 'cat'
+                            }
                         }
                     }
                     stages {
+                        stage('Checkout') {
+                            steps {
+                                script {
+                                    def branch = env.CHANGE_BRANCH ? env.CHANGE_BRANCH : env.GIT_BRANCH
+                                    git branch: "${branch}", credentialsId: 'github-app', url: 'https://github.com/Web-tree/trust.git'
+                                }
+                            }
+                        }
                         stage('Validate') {
                             steps {
-                                dir ('front/') {
-                                    sh 'npm i'
+                                dir('front/') {
+                                    sh 'npm ci'
                                     sh 'npm run test-headless'
                                     junit 'testResult/*.xml'
                                 }

@@ -44,6 +44,7 @@
                 <enabled>false</enabled>
             </snapshots>
         </repository>
+
         <repository>
             <id>spring-snapshots</id>
             <name>Spring Snapshots</name>

@@ -12,7 +12,7 @@ pipeline {
                             label 'mystuff-validate-maven'
                             containerTemplate {
                                 name 'maven'
-                                image 'maven:3.6.0-jdk-8-alpine'
+                                image 'maven-jdk-8'
                                 ttyEnabled true
                                 command 'cat'
                             }
